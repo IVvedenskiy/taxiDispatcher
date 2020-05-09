@@ -29,12 +29,4 @@ class LoginController extends Controller
         ]);
     }
 
-    protected function redirectTo( ) {
-        if (Auth::check() && Auth::user()->role == 'dispatcher') {
-            return('/dispatcher');
-        }
-        else {
-            return('/admin');
-        }
-    }
 }

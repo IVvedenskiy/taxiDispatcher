@@ -15,14 +15,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/admin', function(){
-    echo "Hello Admin kek2";
-})->middleware('admin');
-
-Route::get('/dispatcher', function(){
-    echo "Hello Dispatcher";
-})->middleware('dispatcher');
-
 Route::group( [ 'middleware' => 'admin', 'prefix' => 'admin' ], function () {
 // только для админа
     echo "Hello Admin kek2";
