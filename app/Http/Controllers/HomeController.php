@@ -23,7 +23,7 @@ class HomeController extends Controller
     public function showDispatcher()
     {
         $taxiDriver = TaxiDriver::all();
-        return view('dispatcher-dashboard', compact('taxiDriver'));
+        return view('dispatcher.dispatcher-dashboard', compact('taxiDriver'));
     }
 
     public function showAdmin()
