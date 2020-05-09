@@ -21,8 +21,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function isAdmin(){ return $this->position; }
-
-    public function isDispatcher(){ return $this->position; }
 }

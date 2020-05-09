@@ -20,9 +20,14 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function goWork()
+    public function showDispatcher()
     {
         $taxiDriver = TaxiDriver::all();
-        return view('firstWorkPage', compact('taxiDriver'));
+        return view('dispatcher-dashboard', compact('taxiDriver'));
+    }
+
+    public function showAdmin()
+    {
+        return view('admin-dashboard');
     }
 }

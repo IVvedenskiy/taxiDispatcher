@@ -11,22 +11,6 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
                         <div class="form-group row">
-                            <label for="position" class="col-md-4 col-form-label text-md-right">{{ __('position') }}</label>
-
-                            <div class="col-md-6">
-                                <select name="position" class="form-control" >
-                                    <option value="admin">Admin</option>
-                                    <option value="dispatcher">Dispatcher</option>
-                                </select>
-                                @error('position')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
                             <div class="col-md-6">
