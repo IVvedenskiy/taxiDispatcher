@@ -22,7 +22,7 @@
                     <div class="col-md-6 offset-md-5">
                         @if (Auth::user()->position == 'dispatcher')
                             <button type="submit" class="btn btn-danger"
-                                    onclick="location.href='{{ url('dispatcher-dashboard') }}'">
+                                    onclick="location.href='{{ url('orders-table') }}'">
                                 {{ __('Start working') }}
                             </button>
                         @else (Auth::user()->position == 'admin')

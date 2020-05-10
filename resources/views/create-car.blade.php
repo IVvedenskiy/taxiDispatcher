@@ -66,46 +66,38 @@
 
     {{--    content--}}
     <div class="col-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Таблица со всеми водителями</h3>
-        <table class="table table-hover table-bordered">
-            <thead class="bg-danger text-center text-light">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">First name</th>
-                <th scope="col">Last name</th>
-                <th scope="col">Call sign</th>
-                <th scope="col">Phone number</th>
-                <th scope="col">Status</th>
-                <th scope="col">Car</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($taxiDrivers as $driver)
-                <tr>
-                    <td>{{$driver->id}}</td>
-                    <td>{{$driver->firstName}}</td>
-                    <td>{{$driver->lastName}}</td>
-                    <td>{{$driver->callSign}}</td>
-                    <td>{{$driver->phoneNumber}}</td>
-                    <td>{{$driver->status}}</td>
-                    <td>{{$driver->car_id}}</td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-
-        <div class="mt-5">
-            <div class="float-right">
-                <button type="submit" class="btn btn-danger" onclick="location.href='{{ url('home') }}'">
-                    {{ __('Home') }}
-                </button>
+        <h3 class="card-header text-center text-white bg-info">Создать машину</h3>
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{$error}}</li>
+                    @endforeach
+                </ul>
             </div>
-            <div class="float-left">
-                <button type="submit" class="btn btn-danger" onclick="location.href='{{ url('pdf') }}'">
-                    {{ __('Create PDF') }}
-                </button>
+        @endif
+        <form class="m-5" action="{{route('create-car')}}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="number">Номер машины</label>
+                <input type="text" class="form-control" id="number" name="number" value="{{ old('number') }}" placeholder="Введите номер машины" required autocomplete="number" autofocus>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="mark">Марка машины</label>
+                <input type="text" class="form-control" id="mark" name="mark" value="{{ old('mark') }}" placeholder="Введите марку машины" required autocomplete="mark" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="model">Модель машины</label>
+                <input type="text" class="form-control" id="model" name="model" value="{{ old('model') }}" placeholder="Введите модель машины" required autocomplete="model" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="seatsNumber">Количество мест</label>
+                <input type="text" class="form-control" id="seatsNumber" name="seatsNumber" value="{{ old('seatsNumber') }}" placeholder="Введите количество мест" required autocomplete="seatsNumber" autofocus>
+            </div>
+            <div class="row p-5">
+                <button type="submit" class="btn btn-success w-100">Подтвердить</button>
+            </div>
+        </form>
     </div>
 
 </div>
