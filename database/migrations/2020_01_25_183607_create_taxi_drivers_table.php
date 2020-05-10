@@ -10,12 +10,13 @@ class CreateTaxiDriversTable extends Migration
     {
         Schema::create('taxi_drivers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('fullName');
+            $table->string('firstName');
+            $table->string('lastName');
             $table->string('callSign');
             $table->string('phoneNumber');
             $table->string('status');
-            $table->string('car');
-//            $table->integer('car_id');
+            $table->integer('car_id');
+            $table->foreign('car_id')->references('id')->on('cars');
             $table->timestamps();
         });
     }

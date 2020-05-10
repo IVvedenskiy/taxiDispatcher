@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\TaxiDriver;
-use Illuminate\Http\Request;
-use App\User;
 use App\Driver;
 
 class HomeController extends Controller
@@ -22,12 +20,28 @@ class HomeController extends Controller
 
     public function showDispatcher()
     {
-        $taxiDriver = TaxiDriver::all();
         return view('dispatcher.dispatcher-dashboard', compact('taxiDriver'));
+    }
+
+    public function showDrivers(){
+        $taxiDrivers = TaxiDriver::all();
+        foreach ($taxiDrivers as $driver){
+            $driver->getCar();
+        }
+        return view('drivers-table', ['taxiDrivers' => $taxiDrivers]);
     }
 
     public function showAdmin()
     {
         return view('admin-dashboard');
+    }
+
+    public function showCreateOrderForm(){
+        return view('create-order');
+    }
+
+    public function createOrder(){
+        $input = request()->all();
+        return dd($input);
     }
 }

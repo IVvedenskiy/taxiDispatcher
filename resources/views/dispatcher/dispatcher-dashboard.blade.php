@@ -15,8 +15,14 @@
 </head>
 <body>
 
-<div class="bg-dark row">
+<div class="bg-dark row m-0">
+
     <div class="bg-dark col-xl-1">
+        <div class="mt-5 d-flex justify-content-center">
+            <button type="button" class="btn btn-rounded btn-danger"
+                    onclick="location.href='{{ url('create-order') }}'">Создать заказ
+            </button>
+        </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-rounded btn-danger">Карта</button>
         </div>
@@ -24,7 +30,7 @@
             <button type="button" class="btn btn-danger">Заказы</button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger">Водители</button>
+            <button type="submit" class="btn btn-danger" onclick="location.href='{{ url('drivers-table') }}'">Водители</button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-danger">Клиенты</button>
@@ -35,7 +41,7 @@
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-danger">Отчеты</button>
         </div>
-        <div class="mt-5 mb-5 d-flex justify-content-center">
+        <div class="mt-5 mb-4 d-flex justify-content-center">
             <button type="button" class="btn btn-danger">Статистика</button>
         </div>
     </div>

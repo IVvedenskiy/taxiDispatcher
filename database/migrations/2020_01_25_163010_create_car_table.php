@@ -8,7 +8,7 @@ class CreateCarTable extends Migration
 {
     public function up()
     {
-        Schema::create('car', function (Blueprint $table) {
+        Schema::create('cars', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('number');
             $table->string('mark');
