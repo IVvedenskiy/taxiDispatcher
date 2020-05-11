@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Car;
-use App\TaxiDriver;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
@@ -25,10 +24,17 @@ class CarController extends Controller
 
         $car->save();
 
-        return redirect()->route('drivers-table');
+        return redirect()->route('cars-table');
     }
 
-    public function showCreateCarForm(){
-        return view('create-car');
+    public function showCreateCarForm()
+    {
+        return view('create-forms.create-car');
+    }
+
+    public function showCars()
+    {
+        $cars = Car::all();
+        return view('show-table.cars-table', ['cars' => $cars]);
     }
 }

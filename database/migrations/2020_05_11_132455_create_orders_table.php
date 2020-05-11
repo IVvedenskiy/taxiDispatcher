@@ -21,8 +21,10 @@ class CreateOrdersTable extends Migration
             $table->text('description');
             $table->string('tariff');
             $table->double('price');
-            $table->integer('client_id');
+            $table->bigInteger('client_id')->unsigned();
             $table->foreign('client_id')->references('id')->on('clients');
+            $table->bigInteger('driver_id')->unsigned();
+            $table->foreign('driver_id')->references('id')->on('taxi_drivers');
             $table->timestamps();
         });
     }

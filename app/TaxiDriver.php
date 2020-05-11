@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class TaxiDriver extends Model
 {
-    public function getCar(){
-       return $this->belongsTo('App\Car', 'foreign_key', 'car_id', "id");
-    }
+    protected $table = 'taxi_drivers';
 
-    public function getCarInfo(){
-        $car = Car::find();
+    public function getCar()
+    {
+        return $this->hasOne('App\Car', 'car_id', 'id');
     }
 }

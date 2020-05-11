@@ -31,27 +31,37 @@
             </button>
         </div>
         <div class="dropdown btn-group dropright mt-5 d-flex justify-content-center">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
                 Создать...
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item" href="{{ url('create-order') }}">Заказ</a>
                 <a class="dropdown-item" href="{{ url('create-car') }}">Машину</a>
-                <a class="dropdown-item" href="#">Something else here</a>
+                <a class="dropdown-item" href="{{ url('create-client') }}">Клиента</a>
+                <a class="dropdown-item" href="{{ url('create-driver') }}">Водителя</a>
+                <a class="dropdown-item" href="{{ url('create-holiday') }}">Праздник</a>
+            </div>
+        </div>
+        <div class="dropdown btn-group dropright mt-5 d-flex justify-content-center">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                Показать...
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="{{ url('orders-table') }}">Заказы</a>
+                <a class="dropdown-item" href="{{ url('drivers-table') }}">Водители</a>
+                <a class="dropdown-item" href="{{ url('clients-table') }}">Клиенты</a>
+                <a class="dropdown-item" href="{{ url('cars-table') }}">Машины</a>
+                <a class="dropdown-item" href="{{ url('holidays-table') }}">Праздник</a>
             </div>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-rounded btn-danger">Карта</button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger"  onclick="location.href='{{ url('orders-table') }}'">Заказы</button>
-        </div>
-        <div class="mt-5 d-flex justify-content-center">
-            <button type="submit" class="btn btn-danger" onclick="location.href='{{ url('drivers-table') }}'">Водители
+            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('orders-table') }}'">Заказы
             </button>
-        </div>
-        <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger">Клиенты</button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-danger">Info</button>
@@ -63,41 +73,34 @@
             <button type="button" class="btn btn-danger">Статистика</button>
         </div>
     </div>
-
     {{--    content--}}
-    <div class="col-xl-11 bg-light">
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="col-11 bg-light p-0">
+        <h3 class="card-header text-center text-white bg-info">Создать машину</h3>
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{$error}}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <form class="m-5" action="{{route('create-holiday')}}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="name">Название праздника</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="Введите название праздника" required autocomplete="name" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="date">Дата</label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ old('date') }}" placeholder="Введите дату" required autocomplete="date" autofocus>
+            </div>
+            <div class="row p-5">
+                <button type="submit" class="btn btn-success w-100">Подтвердить</button>
+            </div>
+        </form>
     </div>
-</div>
 
+</div>
 </body>
 </html>

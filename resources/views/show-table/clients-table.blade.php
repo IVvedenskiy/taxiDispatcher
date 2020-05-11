@@ -31,27 +31,37 @@
             </button>
         </div>
         <div class="dropdown btn-group dropright mt-5 d-flex justify-content-center">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
                 Создать...
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item" href="{{ url('create-order') }}">Заказ</a>
                 <a class="dropdown-item" href="{{ url('create-car') }}">Машину</a>
-                <a class="dropdown-item" href="#">Something else here</a>
+                <a class="dropdown-item" href="{{ url('create-client') }}">Клиента</a>
+                <a class="dropdown-item" href="{{ url('create-driver') }}">Водителя</a>
+                <a class="dropdown-item" href="{{ url('create-holiday') }}">Праздник</a>
+            </div>
+        </div>
+        <div class="dropdown btn-group dropright mt-5 d-flex justify-content-center">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                Показать...
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="{{ url('orders-table') }}">Заказы</a>
+                <a class="dropdown-item" href="{{ url('drivers-table') }}">Водители</a>
+                <a class="dropdown-item" href="{{ url('clients-table') }}">Клиенты</a>
+                <a class="dropdown-item" href="{{ url('cars-table') }}">Машины</a>
+                <a class="dropdown-item" href="{{ url('holidays-table') }}">Праздник</a>
             </div>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-rounded btn-danger">Карта</button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger"  onclick="location.href='{{ url('orders-table') }}'">Заказы</button>
-        </div>
-        <div class="mt-5 d-flex justify-content-center">
-            <button type="submit" class="btn btn-danger" onclick="location.href='{{ url('drivers-table') }}'">Водители
+            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('orders-table') }}'">Заказы
             </button>
-        </div>
-        <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger">Клиенты</button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-danger">Info</button>
@@ -63,43 +73,33 @@
             <button type="button" class="btn btn-danger">Статистика</button>
         </div>
     </div>
-
     {{--    content--}}
-    <div class="col-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Создать машину</h3>
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{$error}}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        <form class="m-5" action="{{route('create-car')}}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="number">Номер машины</label>
-                <input type="text" class="form-control" id="number" name="number" value="{{ old('number') }}" placeholder="Введите номер машины" required autocomplete="number" autofocus>
-            </div>
-            <div class="form-group">
-                <label for="mark">Марка машины</label>
-                <input type="text" class="form-control" id="mark" name="mark" value="{{ old('mark') }}" placeholder="Введите марку машины" required autocomplete="mark" autofocus>
-            </div>
-            <div class="form-group">
-                <label for="model">Модель машины</label>
-                <input type="text" class="form-control" id="model" name="model" value="{{ old('model') }}" placeholder="Введите модель машины" required autocomplete="model" autofocus>
-            </div>
-            <div class="form-group">
-                <label for="seatsNumber">Количество мест</label>
-                <input type="text" class="form-control" id="seatsNumber" name="seatsNumber" value="{{ old('seatsNumber') }}" placeholder="Введите количество мест" required autocomplete="seatsNumber" autofocus>
-            </div>
-            <div class="row p-5">
-                <button type="submit" class="btn btn-success w-100">Подтвердить</button>
-            </div>
-        </form>
+    <div class="col-xl-11 bg-light p-0">
+        <h3 class="card-header text-center text-white bg-info">Таблица со всеми клиентами</h3>
+        <table class="table table-hover table-bordered">
+            <thead class="bg-danger text-center text-light">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Full name</th>
+                <th scope="col">Phone number</th>
+                <th scope="col">Created at</th>
+                <th scope="col">Updated at</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($clients as $client)
+                <tr>
+                    <td>{{$client->id}}</td>
+                    <td>{{$client->name}}</td>
+                    <td>{{$client->phoneNumber}}</td>
+                    <td>{{$client->created_at}}</td>
+                    <td>{{$client->updated_at}}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
     </div>
-
 </div>
+
 </body>
 </html>

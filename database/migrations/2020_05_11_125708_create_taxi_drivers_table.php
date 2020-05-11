@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class TaxiDrivers extends Migration
+class CreateTaxiDriversTable extends Migration
 {
     /**
      * Run the migrations.
@@ -20,7 +20,7 @@ class TaxiDrivers extends Migration
             $table->string('callSign');
             $table->string('phoneNumber');
             $table->string('status');
-            $table->integer('car_id');
+            $table->bigInteger('car_id')->unsigned();
             $table->foreign('car_id')->references('id')->on('cars');
             $table->timestamps();
         });
