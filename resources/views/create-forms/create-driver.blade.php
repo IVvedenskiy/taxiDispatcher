@@ -44,6 +44,9 @@
                 <a class="dropdown-item" href="{{ url('create-car') }}">Машину</a>
                 <a class="dropdown-item" href="{{ url('create-client') }}">Клиента</a>
                 <a class="dropdown-item" href="{{ url('create-driver') }}">Водителя</a>
+                <a class="dropdown-item" href="{{ url('create-medInspections') }}">Медосмотр</a>
+                <a class="dropdown-item" href="{{ url('create-techInspections') }}">Техосмотр</a>
+                <a class="dropdown-item" href="{{ url('create-driversWorkingDays') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('create-holiday') }}">Праздник</a>
             </div>
         </div>
@@ -57,6 +60,9 @@
                 <a class="dropdown-item" href="{{ url('drivers-table') }}">Водители</a>
                 <a class="dropdown-item" href="{{ url('clients-table') }}">Клиенты</a>
                 <a class="dropdown-item" href="{{ url('cars-table') }}">Машины</a>
+                <a class="dropdown-item" href="{{ url('medInspections-table') }}">Медосмотр</a>
+                <a class="dropdown-item" href="{{ url('techInspections-table') }}">Техосмотр</a>
+                <a class="dropdown-item" href="{{ url('driversWorkingDays-table') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('holidays-table') }}">Праздник</a>
             </div>
         </div>
