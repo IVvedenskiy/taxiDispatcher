@@ -46,6 +46,7 @@
                 <a class="dropdown-item" href="{{ url('create-car') }}">Машину</a>
                 <a class="dropdown-item" href="{{ url('create-client') }}">Клиента</a>
                 <a class="dropdown-item" href="{{ url('create-driver') }}">Водителя</a>
+                <a class="dropdown-item" href="{{ url('create-driversWorkingDays') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('create-holiday') }}">Праздник</a>
             </div>
         </div>
@@ -59,6 +60,7 @@
                 <a class="dropdown-item" href="{{ url('drivers-table') }}">Водители</a>
                 <a class="dropdown-item" href="{{ url('clients-table') }}">Клиенты</a>
                 <a class="dropdown-item" href="{{ url('cars-table') }}">Машины</a>
+                <a class="dropdown-item" href="{{ url('driversWorkingDays-table') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('holidays-table') }}">Праздник</a>
             </div>
         </div>
@@ -81,25 +83,37 @@
     </div>
     {{--    content--}}
     <div class="col-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Таблица со всеми водителями</h3>
+        <h3 class="card-header text-center text-white bg-info">Таблица с медосмотрами</h3>
         <table class="table table-hover table-bordered">
             <thead class="bg-danger text-center text-light">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Номер</th>
-                <th scope="col">Марка</th>
-                <th scope="col">Модель</th>
-                <th scope="col">Количество мест</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Давление</th>
+                <th scope="col">Пульс</th>
+                <th scope="col">Опьянение</th>
+                <th scope="col">Температура</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($cars as $car)
+            @foreach($medInspections as $medInspection)
                 <tr>
-                    <td>{{$car->id}}</td>
-                    <td>{{$car->number}}</td>
-                    <td>{{$car->mark}}</td>
-                    <td>{{$car->model}}</td>
-                    <td>{{$car->seatsNumber}}</td>
+                    <td>{{$medInspection->id}}</td>
+                    @foreach($taxiDrivers as $taxiDriver)
+                        @if($taxiDriver->id == $medInspection->driver_id)
+                            <td>{{$taxiDriver->lastName}} {{$taxiDriver->firstName}}</td>
+                        @endif
+                    @endforeach
+                    <td>{{$medInspection->pressure}}</td>
+                    <td>{{$medInspection->pulse}}</td>
+                    <td>
+                        @if ($medInspection->intoxication == 1)
+                            Есть
+                        @else
+                            Нет
+                        @endif
+                    </td>
+                    <td>{{$medInspection->temperature}}</td>
                 </tr>
             @endforeach
             </tbody>

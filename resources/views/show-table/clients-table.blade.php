@@ -80,10 +80,10 @@
             <thead class="bg-danger text-center text-light">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Full name</th>
-                <th scope="col">Phone number</th>
-                <th scope="col">Created at</th>
-                <th scope="col">Updated at</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Номер телефона</th>
+                <th scope="col">Созданно в</th>
+                <th scope="col">Обновленно в</th>
             </tr>
             </thead>
             <tbody>

@@ -9,24 +9,51 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-{{--    <link href="{{ asset('css/bootstrap-grid.min.css') }}" rel="stylesheet">--}}
-{{--    <link href="{{ asset('css/bootstrap-reboot.min.css') }}" rel="stylesheet">--}}
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-{{--    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"--}}
-{{--            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"--}}
-{{--            crossorigin="anonymous"></script>--}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
             crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/themes/sunny/jquery-ui.css">
+    <style>
+        li.ui-menu-item {
+            display: block;
+            width: 100%;
+            height: calc(1.5em + .75rem + 2px);
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function() {
+            var clients = [
+            @foreach($clients as $client)
+                {label: "{{$client->name}} {{$client->phoneNumber}}", value: "{{$client->id}}"},
+                @endforeach
+            ];
+
+            $('#acInput').autocomplete({
+                source: clients
+            })
+        });
+    </script>
 </head>
 <body>
-
 <div class="bg-dark row m-0">
     {{--    aside--}}
     <div class="bg-dark col-1">
@@ -45,6 +72,9 @@
                 <a class="dropdown-item" href="{{ url('create-car') }}">Машину</a>
                 <a class="dropdown-item" href="{{ url('create-client') }}">Клиента</a>
                 <a class="dropdown-item" href="{{ url('create-driver') }}">Водителя</a>
+                <a class="dropdown-item" href="{{ url('create-medInspections') }}">Медосмотр</a>
+                <a class="dropdown-item" href="{{ url('create-techInspections') }}">Техосмотр</a>
+                <a class="dropdown-item" href="{{ url('create-driversWorkingDays') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('create-holiday') }}">Праздник</a>
             </div>
         </div>
@@ -58,6 +88,9 @@
                 <a class="dropdown-item" href="{{ url('drivers-table') }}">Водители</a>
                 <a class="dropdown-item" href="{{ url('clients-table') }}">Клиенты</a>
                 <a class="dropdown-item" href="{{ url('cars-table') }}">Машины</a>
+                <a class="dropdown-item" href="{{ url('medInspections-table') }}">Медосмотр</a>
+                <a class="dropdown-item" href="{{ url('techInspections-table') }}">Техосмотр</a>
+                <a class="dropdown-item" href="{{ url('driversWorkingDays-table') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('holidays-table') }}">Праздник</a>
             </div>
         </div>
@@ -104,21 +137,21 @@
                        placeholder="Введите адрес куда" required autocomplete="addressTo" autofocus>
             </div>
             <div class="form-group">
-                <label for="name">Имя клиента</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}"
-                       placeholder="Введите имя клиента" autocomplete="name" autofocus>
-            </div>
-            <div class="form-group">
-                <label for="phone">Телефон клиента</label>
-                <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone') }}"
-                       placeholder="Введите телефон клиента" required autocomplete="phone" autofocus>
+                <label for="client_id">Клиент</label>
+                <div class="m-3 float-right">
+                    <button type="button" class="btn btn-rounded btn-info"
+                            onclick="location.href='{{ url('create-client') }}'">Создать клиента
+                    </button>
+                </div>
+                <input type="text" class="form-control" id="acInput" name="client_id" value="{{ old('client_id') }}"
+                       placeholder="Выберите клиента" autocomplete="name" autofocus>
             </div>
             <div class="form-group">
                 <label for="tariff">Тариф</label>
                 <select name="tariff" class="form-control" required>
-                    <option value="basic">Базовый</option>
-                    <option value="middle">Средний</option>
-                    <option value="premium">Премиум</option>
+                    <option value='10'>Базовый</option>
+                    <option value='20'>Средний</option>
+                    <option value='30'>Премиум</option>
                 </select>
             </div>
             <div class="form-group">

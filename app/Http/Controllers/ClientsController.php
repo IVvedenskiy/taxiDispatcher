@@ -10,7 +10,7 @@ class ClientsController extends Controller
     public function create(Request $request)
     {
         $validation = $request->validate([
-            'name' => ['required', 'string', 'regex:/^[A-Za-z\s -_]+$/', 'max:255', 'min:2'],
+            'name' => ['required', 'string', 'max:255', 'min:2'],
             'phoneNumber' => ['required', 'string', 'max:255', 'min:1']
         ]);
 

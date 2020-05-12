@@ -12,4 +12,8 @@ class TaxiDriver extends Model
     {
         return $this->hasOne('App\Car', 'car_id', 'id');
     }
+
+    public function getDriver() {
+        return $this->belongsTo('App\DriverWorkingDays', 'id');
+    }
 }

@@ -86,12 +86,12 @@
             <thead class="bg-danger text-center text-light">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">First name</th>
-                <th scope="col">Last name</th>
-                <th scope="col">Call sign</th>
-                <th scope="col">Phone number</th>
-                <th scope="col">Status</th>
-                <th scope="col">Car number</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Позывной</th>
+                <th scope="col">Номер телефона</th>
+                <th scope="col">Статус</th>
+                <th scope="col">Номер машины</th>
             </tr>
             </thead>
             <tbody>

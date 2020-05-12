@@ -46,6 +46,7 @@
                 <a class="dropdown-item" href="{{ url('create-car') }}">Машину</a>
                 <a class="dropdown-item" href="{{ url('create-client') }}">Клиента</a>
                 <a class="dropdown-item" href="{{ url('create-driver') }}">Водителя</a>
+                <a class="dropdown-item" href="{{ url('create-driversWorkingDays') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('create-holiday') }}">Праздник</a>
             </div>
         </div>
@@ -59,6 +60,7 @@
                 <a class="dropdown-item" href="{{ url('drivers-table') }}">Водители</a>
                 <a class="dropdown-item" href="{{ url('clients-table') }}">Клиенты</a>
                 <a class="dropdown-item" href="{{ url('cars-table') }}">Машины</a>
+                <a class="dropdown-item" href="{{ url('driversWorkingDays-table') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('holidays-table') }}">Праздник</a>
             </div>
         </div>
@@ -81,25 +83,63 @@
     </div>
     {{--    content--}}
     <div class="col-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Таблица со всеми водителями</h3>
+        <h3 class="card-header text-center text-white bg-info">Таблица с техосмотрами</h3>
         <table class="table table-hover table-bordered">
             <thead class="bg-danger text-center text-light">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Номер</th>
-                <th scope="col">Марка</th>
-                <th scope="col">Модель</th>
-                <th scope="col">Количество мест</th>
+                <th scope="col">Полное имя</th>
+                <th scope="col">Страховка</th>
+                <th scope="col">Лицензия</th>
+                <th scope="col">Тормоза</th>
+                <th scope="col">Рулевое управление</th>
+                <th scope="col">Двигатель</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($cars as $car)
+            @foreach($techInspections as $techInspection)
                 <tr>
-                    <td>{{$car->id}}</td>
-                    <td>{{$car->number}}</td>
-                    <td>{{$car->mark}}</td>
-                    <td>{{$car->model}}</td>
-                    <td>{{$car->seatsNumber}}</td>
+                    <td>{{$techInspection->id}}</td>
+                    @foreach($taxiDrivers as $taxiDriver)
+                        @if($taxiDriver->id == $techInspection->driver_id)
+                            <td>{{$taxiDriver->lastName}} {{$taxiDriver->firstName}}</td>
+                        @endif
+                    @endforeach
+                    <td>
+                        @if ($techInspection->insurance == 1)
+                            Есть
+                        @else
+                            Нет
+                        @endif
+                    </td>
+                    <td>
+                        @if ($techInspection->license == 1)
+                            Есть
+                        @else
+                            Нет
+                        @endif
+                    </td>
+                    <td>
+                        @if ($techInspection->brakes == 1)
+                            Исправны
+                        @else
+                            Неисправны
+                        @endif
+                    </td>
+                    <td>
+                        @if ($techInspection->steering == 1)
+                            Исправно
+                        @else
+                            Неисправно
+                        @endif
+                    </td>
+                    <td>
+                        @if ($techInspection->engine == 1)
+                            Исправен
+                        @else
+                            Неисправен
+                        @endif
+                    </td>
                 </tr>
             @endforeach
             </tbody>

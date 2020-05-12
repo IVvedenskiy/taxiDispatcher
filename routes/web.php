@@ -44,3 +44,23 @@ Route::get('/create-holiday', 'HolidaysController@showCreateHolidayForm')->name(
 Route::post('/create-holiday', 'HolidaysController@create')->name('create-holiday');
 
 Route::get('/holidays-table', 'HolidaysController@showHolidays')->name('holidays-table');
+//driverWorkingDays
+Route::get('/create-driversWorkingDays', 'DriverWorkingDaysController@showCreateDriverWorkingDaysForm')->name('create-driversWorkingDays');
+
+Route::post('/create-driversWorkingDays', 'DriverWorkingDaysController@create')->name('create-driversWorkingDays');
+
+Route::get('/driversWorkingDays-table', 'DriverWorkingDaysController@showDriverWorkingDays')->name('driversWorkingDays-table');
+//medInspections
+Route::get('/create-medInspections', 'MedInspectionsController@showCreateMedInspectionsForm')->name('create-medInspections');
+
+Route::post('/create-medInspections', 'MedInspectionsController@create')->name('create-medInspections');
+
+Route::get('/medInspections-table', 'MedInspectionsController@showMedInspections')->name('medInspections-table');
+//techInspections
+Route::get('/create-techInspections', 'TechInspectionsController@showCreateTechInspectionsForm')->name('create-techInspections');
+
+Route::post('/create-techInspections', 'TechInspectionsController@create')->name('create-techInspections');
+
+Route::get('/techInspections-table', 'TechInspectionsController@showTechInspections')->name('techInspections-table');
+//routes
+Route::get('/routes-table', 'RoutesController@showRoutes')->name('routes-table');

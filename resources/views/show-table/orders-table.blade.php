@@ -74,35 +74,50 @@
         </div>
     </div>
     {{--    content--}}
-    <div class="col-xl-11 bg-light">
-        <table class="table">
-            <thead>
+    <div class="col-xl-11 bg-light p-0">
+        <h3 class="card-header text-center text-white bg-info">Таблица с выполнеными заказами</h3>
+        <table class="table table-hover table-bordered">
+            <thead class="bg-danger text-center text-light">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
+                <th scope="col">Адрес начала</th>
+                <th scope="col">Адрес конца</th>
+                <th scope="col">Тариф</th>
+                <th scope="col">Цена</th>
+                <th scope="col">Описание</th>
+                <th scope="col">Клиент</th>
+                <th scope="col">Водитель</th>
+                <th scope="col">Время</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-            </tr>
+            @foreach($orders as $order)
+                <tr>
+                    <td>{{$order->id}}</td>
+                    <td>{{$order->addressFrom}}</td>
+                    <td>{{$order->addressTo}}</td>
+                    <td>
+                        @switch($order->tariff)
+                            @case(10)Базовый@break
+                            @case(20)Средний@break
+                            @case(30)Премиум@break
+                        @endswitch
+                    </td>
+                    <td>{{$order->price}}</td>
+                    <td>{{$order->description}}</td>
+                    @foreach($clients as $client)
+                        @if($client->id == $order->client_id)
+                            <td>{{$client->name}}</td>
+                        @endif
+                    @endforeach
+                    @foreach($taxiDrivers as $taxiDriver)
+                        @if($taxiDriver->id == $order->driver_id)
+                            <td>{{$taxiDriver->firstName}}{{$taxiDriver->lastName}}</td>
+                        @endif
+                    @endforeach
+                    <td>{{$order->created_at}}</td>
+                </tr>
+            @endforeach
             </tbody>
         </table>
     </div>

@@ -9,15 +9,15 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap-grid.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap-reboot.min.css') }}" rel="stylesheet">
+    {{--    <link href="{{ asset('css/bootstrap-grid.min.css') }}" rel="stylesheet">--}}
+    {{--    <link href="{{ asset('css/bootstrap-reboot.min.css') }}" rel="stylesheet">--}}
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
+    {{--    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"--}}
+    {{--            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"--}}
+    {{--            crossorigin="anonymous"></script>--}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
             crossorigin="anonymous"></script>
@@ -26,8 +26,6 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-
-
 <div class="bg-dark row m-0">
     {{--    aside--}}
     <div class="bg-dark col-1">
@@ -46,6 +44,7 @@
                 <a class="dropdown-item" href="{{ url('create-car') }}">Машину</a>
                 <a class="dropdown-item" href="{{ url('create-client') }}">Клиента</a>
                 <a class="dropdown-item" href="{{ url('create-driver') }}">Водителя</a>
+                <a class="dropdown-item" href="{{ url('create-driversWorkingDays') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('create-holiday') }}">Праздник</a>
             </div>
         </div>
@@ -59,6 +58,7 @@
                 <a class="dropdown-item" href="{{ url('drivers-table') }}">Водители</a>
                 <a class="dropdown-item" href="{{ url('clients-table') }}">Клиенты</a>
                 <a class="dropdown-item" href="{{ url('cars-table') }}">Машины</a>
+                <a class="dropdown-item" href="{{ url('driversWorkingDays-table') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('holidays-table') }}">Праздник</a>
             </div>
         </div>
@@ -81,37 +81,65 @@
     </div>
     {{--    content--}}
     <div class="col-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Таблица со всеми водителями</h3>
-        <table class="table table-hover table-bordered">
-            <thead class="bg-danger text-center text-light">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Номер</th>
-                <th scope="col">Марка</th>
-                <th scope="col">Модель</th>
-                <th scope="col">Количество мест</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($cars as $car)
-                <tr>
-                    <td>{{$car->id}}</td>
-                    <td>{{$car->number}}</td>
-                    <td>{{$car->mark}}</td>
-                    <td>{{$car->model}}</td>
-                    <td>{{$car->seatsNumber}}</td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-
-        <div class="mt-5">
-            <div class="float-right">
-                <button type="submit" class="btn btn-danger" onclick="location.href='{{ url('home') }}'">
-                    {{ __('Home') }}
-                </button>
+        <h3 class="card-header text-center text-white bg-info">Создать техосмотр</h3>
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{$error}}</li>
+                    @endforeach
+                </ul>
             </div>
-        </div>
+        @endif
+        <form class="m-5" action="{{route('create-techInspections')}}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="driver_id">Водитель</label>
+                <select name="driver_id" class="form-control" required>
+                    @foreach($taxiDrivers as $taxiDriver)
+                        <option value="{{$taxiDriver->id}}">{{$taxiDriver->lastName}} {{$taxiDriver->firstName}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="insurance">Страховка</label>
+                <select name="insurance" class="form-control" required>
+                    <option value='1'>Есть</option>
+                    <option value='0'>Нет</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="license">Лицензия</label>
+                <select name="license" class="form-control" required>
+                    <option value='1'>Есть</option>
+                    <option value='0'>Нет</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="brakes">Тормоза</label>
+                <select name="brakes" class="form-control" required>
+                    <option value='1'>Исправны</option>
+                    <option value='0'>Неисправны</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="steering">Рулевое управление</label>
+                <select name="steering" class="form-control" required>
+                    <option value='1'>Исправно</option>
+                    <option value='0'>Неисправно</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="engine">Двигатель</label>
+                <select name="engine" class="form-control" required>
+                    <option value='1'>Исправен</option>
+                    <option value='0'>Неисправен</option>
+                </select>
+            </div>
+            <div class="row p-5">
+                <button type="submit" class="btn btn-success w-100">Подтвердить</button>
+            </div>
+        </form>
     </div>
 
 </div>

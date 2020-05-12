@@ -46,6 +46,7 @@
                 <a class="dropdown-item" href="{{ url('create-car') }}">Машину</a>
                 <a class="dropdown-item" href="{{ url('create-client') }}">Клиента</a>
                 <a class="dropdown-item" href="{{ url('create-driver') }}">Водителя</a>
+                <a class="dropdown-item" href="{{ url('create-driversWorkingDays') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('create-holiday') }}">Праздник</a>
             </div>
         </div>
@@ -59,6 +60,7 @@
                 <a class="dropdown-item" href="{{ url('drivers-table') }}">Водители</a>
                 <a class="dropdown-item" href="{{ url('clients-table') }}">Клиенты</a>
                 <a class="dropdown-item" href="{{ url('cars-table') }}">Машины</a>
+                <a class="dropdown-item" href="{{ url('driversWorkingDays-table') }}">Выходы водителей</a>
                 <a class="dropdown-item" href="{{ url('holidays-table') }}">Праздник</a>
             </div>
         </div>
@@ -81,25 +83,29 @@
     </div>
     {{--    content--}}
     <div class="col-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Таблица со всеми водителями</h3>
+        <h3 class="card-header text-center text-white bg-info">Таблица со выходами водителей</h3>
         <table class="table table-hover table-bordered">
             <thead class="bg-danger text-center text-light">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Номер</th>
-                <th scope="col">Марка</th>
-                <th scope="col">Модель</th>
-                <th scope="col">Количество мест</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Начало смены</th>
+                <th scope="col">Конец смены</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($cars as $car)
+            @foreach($driversWorkingDays as $driversWorkingDay)
                 <tr>
-                    <td>{{$car->id}}</td>
-                    <td>{{$car->number}}</td>
-                    <td>{{$car->mark}}</td>
-                    <td>{{$car->model}}</td>
-                    <td>{{$car->seatsNumber}}</td>
+                    <td>{{$driversWorkingDay->id}}</td>
+                    @foreach($taxiDrivers as $taxiDriver)
+                        @if($taxiDriver->id == $driversWorkingDay->driver_id)
+                            <td>{{$taxiDriver->lastName}} {{$taxiDriver->firstName}}</td>
+                        @endif
+                    @endforeach
+                    <td>{{$driversWorkingDay->date}}</td>
+                    <td>{{$driversWorkingDay->shift_start}}</td>
+                    <td>{{$driversWorkingDay->shift_end}}</td>
                 </tr>
             @endforeach
             </tbody>
