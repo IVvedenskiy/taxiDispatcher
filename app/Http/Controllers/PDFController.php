@@ -3,18 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\TaxiDriver;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\PDF;
+use PhpOffice\PhpWord\Exception\Exception;
+
 
 class PDFController extends Controller
 {
     public function getPdfPage()
     {
         $data = TaxiDriver::all();
-        $pdf = (new \Barryvdh\DomPDF\PDF)->loadView('pdf', $data)->setPaper('a4');
-        $pdf->save(storage_path().'taxi_drivers.pdf');
-        return $pdf->download('pdf');
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+        foreach ($data as $s){
+            $text = $section->addText($s->lastName);
+            $text = $section->addText($s->callSign);
+            $text = $section->addText($s->phoneNumber);
+        }
+//        $text = $section->addText($request->get('number'),array('name'=>'Arial','size' => 20,'bold' => true));
+//        $section->addImage("./images/Krunal.jpg");
+        try {
+            $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        } catch (Exception $e) {
+            echo $e;
+        }
+        $objWriter->save('Appdividend.docx');
+        return response()->download(public_path('Appdividend.docx'));
     }
 }
