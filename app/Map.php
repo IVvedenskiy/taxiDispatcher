@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Route extends Model
+class Map extends Model
 {
     //
 }

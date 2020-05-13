@@ -62,5 +62,5 @@ Route::get('/create-techInspections', 'TechInspectionsController@showCreateTechI
 Route::post('/create-techInspections', 'TechInspectionsController@create')->name('create-techInspections');
 
 Route::get('/techInspections-table', 'TechInspectionsController@showTechInspections')->name('techInspections-table');
-//routes
-Route::get('/routes-table', 'RoutesController@showRoutes')->name('routes-table');
+//map
+Route::get('/map', 'MapController@showMap')->name('map');
