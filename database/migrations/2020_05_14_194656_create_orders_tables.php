@@ -20,6 +20,7 @@ class CreateOrdersTables extends Migration
             $table->text('description');
             $table->string('tariff');
             $table->double('price');
+            $table->integer('passengersNumber');
             $table->boolean('completed');
             $table->bigInteger('client_id')->unsigned();
             $table->foreign('client_id')->references('id')->on('clients');

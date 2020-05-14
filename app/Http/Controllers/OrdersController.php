@@ -17,6 +17,7 @@ class OrdersController extends Controller
             'addressTo' => ['required', 'string', 'max:255', 'min:5'],
             'description' => ['string', 'max:255'],
             'tariff' => ['required', 'string', 'max:255', 'min:1'],
+            'passengersNumber' => ['required', 'integer', 'max:10', 'min:1'],
             'client_id' => ['required']
         ]);
 
@@ -26,6 +27,7 @@ class OrdersController extends Controller
         $order->description = $request->input('description');
         $order->tariff = $request->input('tariff');
         $order->price = 300;
+        $order->passengersNumber=$request->input('passengersNumber');
         $order->completed = false;
         $order->client_id = $request->input('client_id');
         $order->driver_id = 4;

@@ -89,8 +89,10 @@
                 <th scope="col">Адрес начала</th>
                 <th scope="col">Адрес конца</th>
                 <th scope="col">Тариф</th>
+                <th scope="col">Количество пассажиров</th>
                 <th scope="col">Цена</th>
                 <th scope="col">Описание</th>
+                <th scope="col">Статус</th>
                 <th scope="col">Клиент</th>
                 <th scope="col">Водитель</th>
                 <th scope="col">Время</th>
@@ -109,8 +111,15 @@
                             @case(30)Премиум@break
                         @endswitch
                     </td>
+                    <td>{{$order->passengersNumber}}</td>
                     <td>{{$order->price}}</td>
                     <td>{{$order->description}}</td>
+                    <td>
+                        @switch($order->completed)
+                            @case(0)Свободен@break
+                            @case(1)Выполнен@break
+                        @endswitch
+                    </td>
                     @foreach($clients as $client)
                         @if($client->id == $order->client_id)
                             <td>{{$client->name}}</td>

@@ -91,7 +91,7 @@
         <h3 class="card-header text-center text-white bg-info">Карта</h3>
 
         <div id="map" class="h-75"></div>
-
+        <div id="warnings-panel"></div>
     </div>
 
 </div>
@@ -99,36 +99,133 @@
         async defer></script>
 
 <script>
-    var map;
 
-    var locations = [
+    var map;
+    var geocoder;
+    var infowindow;
+
+    var locationsDrivers = [
             @foreach($drivers as $driver)
         ['{{$driver->callSign}}', random(47, 47.2), random(37.5, 37.65), 1],
         @endforeach
     ];
 
+    var locationsClientsFrom = [
+            @foreach($orders as $order)
+        ['{{$order->id}}', '{{$order->addressFrom}}'],
+        @endforeach
+    ];
+
+    var locationsClientsTo = [
+            @foreach($orders as $order)
+        ['{{$order->id}}', '{{$order->addressTo}}'],
+        @endforeach
+    ];
+
     function initMap() {
+        geocoder = new google.maps.Geocoder();
+        infowindow = new google.maps.InfoWindow;
+        var directionsService = new google.maps.DirectionsService;
+        var markerArray = [];
+
         map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 47.1, lng: 37.55},
             zoom: 13
         });
 
-        var infowindow = new google.maps.InfoWindow;
+        var directionsRenderer = new google.maps.DirectionsRenderer({map: map});
+        var stepDisplay = new google.maps.InfoWindow;
 
-        for (i = 0; i < locations.length; i++) {
-            marker = new google.maps.Marker({
-                position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        calculateAndDisplayRoute(
+            directionsRenderer, directionsService, markerArray, stepDisplay, map);
+        // Listen to change events from the start and end lists.
+        var onChangeHandler = function () {
+            calculateAndDisplayRoute(
+                directionsRenderer, directionsService, markerArray, stepDisplay, map);
+        };
+        for (i = 0; i < locationsClientsFrom, locationsClientsTo; i++) {
+            locationsClientsFrom[i][1].addEventListener('change', onChangeHandler);
+            locationsClientsTo[i][1].addEventListener('change', onChangeHandler);
+        }
+
+        for (i = 0; i < locationsDrivers.length; i++) {
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(locationsDrivers[i][1], locationsDrivers[i][2]),
                 animation: google.maps.Animation.DROP,
                 map: map
             });
-
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
                 return function () {
-                    infowindow.setContent(locations[i][0]);
+                    infowindow.setContent(locationsDrivers[i][0]);
                     infowindow.open(map, marker);
                 }
             })(marker, i));
         }
+        codeAddressOrder(locationsClientsFrom);
+        codeAddressOrder(locationsClientsTo);
+    }
+
+    function codeAddressOrder(locations) {
+        var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+
+        for (i = 0; i < locations.length; i++) {
+            geocoder.geocode({'address': locations[i][1]}, function (results, status) {
+                if (status == 'OK') {
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        icon: image,
+                        position: results[0].geometry.location,
+                        animation: google.maps.Animation.DROP
+                    });
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+    }
+
+    function calculateAndDisplayRoute(directionsRenderer, directionsService,
+                                      markerArray, stepDisplay, map) {
+        for (var i = 0; i < markerArray.length; i++) {
+            markerArray[i].setMap(null);
+        }
+        directionsService.route({
+            origin: document.getElementById('start').value,
+            destination: document.getElementById('end').value,
+            travelMode: 'DRIVING '
+        }, function(response, status) {
+            if (status === 'OK') {
+                document.getElementById('warnings-panel').innerHTML =
+                    '<b>' + response.routes[0].warnings + '</b>';
+                directionsRenderer.setDirections(response);
+                showSteps(response, markerArray, stepDisplay, map);
+            } else {
+                window.alert('Directions request failed due to ' + status);
+            }
+        });
+    }
+
+    function showSteps(directionResult, markerArray, stepDisplay, map) {
+        // For each step, place a marker, and add the text to the marker's infowindow.
+        // Also attach the marker to an array so we can keep track of it and remove it
+        // when calculating new routes.
+        var myRoute = directionResult.routes[0].legs[0];
+        for (var i = 0; i < myRoute.steps.length; i++) {
+            var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
+            marker.setMap(map);
+            marker.setPosition(myRoute.steps[i].start_location);
+            attachInstructionText(
+                stepDisplay, marker, myRoute.steps[i].instructions, map);
+        }
+    }
+
+    function attachInstructionText(stepDisplay, marker, text, map) {
+        google.maps.event.addListener(marker, 'click', function() {
+            // Open an info window when the marker is clicked on, containing the text
+            // of the step.
+            stepDisplay.setContent(text);
+            stepDisplay.open(map, marker);
+        });
     }
 
     function random(mn, mx) {

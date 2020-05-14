@@ -150,6 +150,10 @@
                        placeholder="Выберите клиента" autocomplete="name" autofocus>
             </div>
             <div class="form-group">
+                <label for="passengersNumber">Количество пассажиров</label>
+                <input type="number" class="form-control" id="passengersNumber" name="passengersNumber" value="{{ old('passengersNumber') }}"  placeholder="Введите количество пассажиров" >
+            </div>
+            <div class="form-group">
                 <label for="tariff">Тариф</label>
                 <select name="tariff" class="form-control" required>
                     <option value='10'>Базовый</option>

@@ -194,8 +194,6 @@ class ReportController extends Controller
         header('Expires: 0');
         $xmlWriter = IOFactory::createWriter($phpWord, 'Word2007');
         $xmlWriter->save("php://output");
-
-        return response()->download(public_path('Report.docx'));
     }
 
     public function getDriverById($id)
