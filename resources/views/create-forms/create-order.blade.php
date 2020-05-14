@@ -108,7 +108,7 @@
             <button type="button" class="btn btn-danger">Info</button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('pdf') }}'">Отчеты</button>
+            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('report') }}'">Отчеты</button>
         </div>
         <div class="mt-5 mb-4 d-flex justify-content-center">
             <button type="button" class="btn btn-danger">Статистика</button>
