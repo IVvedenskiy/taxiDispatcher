@@ -26,8 +26,8 @@ class OrdersController extends Controller
         $order->addressTo = $request->input('addressTo');
         $order->description = $request->input('description');
         $order->tariff = $request->input('tariff');
-        $order->price = 300;
-        $order->passengersNumber=$request->input('passengersNumber');
+        $order->price = $request->input('price');
+        $order->passengersNumber = $request->input('passengersNumber');
         $order->completed = false;
         $order->client_id = $request->input('client_id');
         $order->driver_id = 4;
@@ -52,6 +52,7 @@ class OrdersController extends Controller
     {
         $clients = Client::all();
         $orders = Order::all();
-        return view('create-forms.create-order', ['orders' => $orders, 'clients' => $clients]);
+        $drivers = TaxiDriver::all();
+        return view('create-forms.create-order', ['orders' => $orders, 'clients' => $clients, 'drivers' => $drivers]);
     }
 }

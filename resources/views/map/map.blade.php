@@ -90,12 +90,29 @@
     <div class="col-11 bg-light p-0">
         <h3 class="card-header text-center text-white bg-info">Карта</h3>
 
+        <div class="m-4">
+            <form action="PayslipServlet" method="get">
+                <label class="ml-5">Начало </label>
+                <select class="form-control-sm w-25" id="start">
+                    @foreach($orders as $order)
+                        <option value="{{$order->addressFrom}}">#{{$order->id}} - {{$order->addressFrom}}</option>
+                    @endforeach
+                </select>
+                <label class="ml-5">Конец </label>
+                <select class="form-control-sm w-25" id="end">
+                    @foreach($orders as $order)
+                        <option value="{{$order->addressTo}}">#{{$order->id}} - {{$order->addressTo}}</option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
+
         <div id="map" class="h-75"></div>
         <div id="warnings-panel"></div>
     </div>
 
 </div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBC36TmI9rcRX88IilNmUbx9Tn7vaEwxOY&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBC36TmI9rcRX88IilNmUbx9Tn7vaEwxOY&callback=initMap&language=ru&region=UA"
         async defer></script>
 
 <script>
@@ -107,18 +124,6 @@
     var locationsDrivers = [
             @foreach($drivers as $driver)
         ['{{$driver->callSign}}', random(47, 47.2), random(37.5, 37.65), 1],
-        @endforeach
-    ];
-
-    var locationsClientsFrom = [
-            @foreach($orders as $order)
-        ['{{$order->id}}', '{{$order->addressFrom}}'],
-        @endforeach
-    ];
-
-    var locationsClientsTo = [
-            @foreach($orders as $order)
-        ['{{$order->id}}', '{{$order->addressTo}}'],
         @endforeach
     ];
 
@@ -138,15 +143,13 @@
 
         calculateAndDisplayRoute(
             directionsRenderer, directionsService, markerArray, stepDisplay, map);
-        // Listen to change events from the start and end lists.
+
         var onChangeHandler = function () {
             calculateAndDisplayRoute(
                 directionsRenderer, directionsService, markerArray, stepDisplay, map);
         };
-        for (i = 0; i < locationsClientsFrom, locationsClientsTo; i++) {
-            locationsClientsFrom[i][1].addEventListener('change', onChangeHandler);
-            locationsClientsTo[i][1].addEventListener('change', onChangeHandler);
-        }
+        document.getElementById('start').addEventListener('change', onChangeHandler);
+        document.getElementById('end').addEventListener('change', onChangeHandler);
 
         for (i = 0; i < locationsDrivers.length; i++) {
             var marker = new google.maps.Marker({
@@ -161,15 +164,15 @@
                 }
             })(marker, i));
         }
-        codeAddressOrder(locationsClientsFrom);
-        codeAddressOrder(locationsClientsTo);
+        codeAddressOrder(document.getElementById('start'));
+        codeAddressOrder(document.getElementById('end'));
     }
 
     function codeAddressOrder(locations) {
         var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
 
         for (i = 0; i < locations.length; i++) {
-            geocoder.geocode({'address': locations[i][1]}, function (results, status) {
+            geocoder.geocode({'address': locations}, function (results, status) {
                 if (status == 'OK') {
                     var marker = new google.maps.Marker({
                         map: map,
@@ -192,12 +195,23 @@
         directionsService.route({
             origin: document.getElementById('start').value,
             destination: document.getElementById('end').value,
-            travelMode: 'DRIVING '
-        }, function(response, status) {
+            travelMode: google.maps.DirectionsTravelMode.DRIVING
+        }, function (response, status) {
             if (status === 'OK') {
                 document.getElementById('warnings-panel').innerHTML =
                     '<b>' + response.routes[0].warnings + '</b>';
                 directionsRenderer.setDirections(response);
+                var route = response.routes[0];
+                var summaryPanel = document.getElementById('price');
+                summaryPanel.innerHTML = '';
+                for (var i = 0; i < route.legs.length; i++) {
+                    var routeSegment = i + 1;
+                    summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                        '</b><br>';
+                    summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+                    summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+                    summaryPanel.innerHTML += route.legs[i].distance.value*0.01 + '<br><br>';
+                }
                 showSteps(response, markerArray, stepDisplay, map);
             } else {
                 window.alert('Directions request failed due to ' + status);
@@ -206,9 +220,6 @@
     }
 
     function showSteps(directionResult, markerArray, stepDisplay, map) {
-        // For each step, place a marker, and add the text to the marker's infowindow.
-        // Also attach the marker to an array so we can keep track of it and remove it
-        // when calculating new routes.
         var myRoute = directionResult.routes[0].legs[0];
         for (var i = 0; i < myRoute.steps.length; i++) {
             var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
@@ -220,9 +231,7 @@
     }
 
     function attachInstructionText(stepDisplay, marker, text, map) {
-        google.maps.event.addListener(marker, 'click', function() {
-            // Open an info window when the marker is clicked on, containing the text
-            // of the step.
+        google.maps.event.addListener(marker, 'click', function () {
             stepDisplay.setContent(text);
             stepDisplay.open(map, marker);
         });
