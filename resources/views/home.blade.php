@@ -27,7 +27,7 @@
                             </button>
                         @else (Auth::user()->position == 'admin')
                             <button type="submit" class="btn btn-danger"
-                                    onclick="location.href='{{ url('admin-dashboard') }}'">
+                                    onclick="location.href='{{ url('admin-orders') }}'">
                                 {{ __('Start working') }}
                             </button>
                         @endif

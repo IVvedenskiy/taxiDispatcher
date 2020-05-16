@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dispatcher</title>
+    <title>Admin</title>
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet"
@@ -25,58 +25,37 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="bg-dark">
 
 <div class="bg-dark row m-0">
     {{--    aside--}}
     <div class="bg-dark col-1">
-        <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-rounded btn-danger"
-                    onclick="location.href='{{ url('create-order') }}'">Создать заказ
-            </button>
-        </div>
-        <div class="dropdown btn-group dropright mt-5 d-flex justify-content-center">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                Создать...
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="{{ url('create-order') }}">Заказ</a>
-                <a class="dropdown-item" href="{{ url('create-car') }}">Машину</a>
-                <a class="dropdown-item" href="{{ url('create-client') }}">Клиента</a>
-                <a class="dropdown-item" href="{{ url('create-driver') }}">Водителя</a>
-                <a class="dropdown-item" href="{{ url('create-medInspections') }}">Медосмотр</a>
-                <a class="dropdown-item" href="{{ url('create-techInspections') }}">Техосмотр</a>
-                <a class="dropdown-item" href="{{ url('create-driversWorkingDays') }}">Выходы водителей</a>
-                <a class="dropdown-item" href="{{ url('create-holiday') }}">Праздник</a>
-            </div>
-        </div>
         <div class="dropdown btn-group dropright mt-5 d-flex justify-content-center">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                 Показать...
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="{{ url('orders-table') }}">Заказы</a>
-                <a class="dropdown-item" href="{{ url('drivers-table') }}">Водители</a>
-                <a class="dropdown-item" href="{{ url('clients-table') }}">Клиенты</a>
-                <a class="dropdown-item" href="{{ url('cars-table') }}">Машины</a>
-                <a class="dropdown-item" href="{{ url('medInspections-table') }}">Медосмотр</a>
-                <a class="dropdown-item" href="{{ url('techInspections-table') }}">Техосмотр</a>
-                <a class="dropdown-item" href="{{ url('driversWorkingDays-table') }}">Выходы водителей</a>
-                <a class="dropdown-item" href="{{ url('holidays-table') }}">Праздник</a>
+                <a class="dropdown-item" href="{{ url('admin-orders') }}">Заказы</a>
+                <a class="dropdown-item" href="{{ url('admin-drivers') }}">Водители</a>
+                <a class="dropdown-item" href="{{ url('admin-clients') }}">Клиенты</a>
+                <a class="dropdown-item" href="{{ url('admin-cars') }}">Машины</a>
+                <a class="dropdown-item" href="{{ url('admin-medInspections') }}">Медосмотр</a>
+                <a class="dropdown-item" href="{{ url('admin-techInspections') }}">Техосмотр</a>
+                <a class="dropdown-item" href="{{ url('admin-driversWorkingDays') }}">Выходы водителей</a>
+                <a class="dropdown-item" href="{{ url('admin-holidays') }}">Праздник</a>
             </div>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-rounded btn-danger" onclick="location.href='{{ url('map') }}'">Карта
+            <button type="button" class="btn btn-rounded btn-danger" onclick="location.href='{{ url('admin-map') }}'">Карта
             </button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('orders-table') }}'">Заказы
+            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('admin-orders') }}'">Заказы
             </button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('report') }}'">Отчеты</button>
+            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('admin-report') }}'">Отчеты</button>
         </div>
         <div class="mt-5 mb-4 d-flex justify-content-center">
             <button type="button" class="btn btn-danger">Статистика</button>
@@ -87,25 +66,29 @@
     </div>
     {{--    content--}}
     <div class="col-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Таблица с машинами</h3>
+        <h3 class="card-header text-center text-white bg-dark p-2">Таблица со выходами водителей</h3>
         <table class="table table-hover table-bordered">
             <thead class="bg-danger text-center text-light">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Номер</th>
-                <th scope="col">Марка</th>
-                <th scope="col">Модель</th>
-                <th scope="col">Количество мест</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Начало смены</th>
+                <th scope="col">Конец смены</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($cars as $car)
+            @foreach($driversWorkingDays as $driversWorkingDay)
                 <tr>
-                    <td>{{$car->id}}</td>
-                    <td>{{$car->number}}</td>
-                    <td>{{$car->mark}}</td>
-                    <td>{{$car->model}}</td>
-                    <td>{{$car->seatsNumber}}</td>
+                    <td>{{$driversWorkingDay->id}}</td>
+                    @foreach($taxiDrivers as $taxiDriver)
+                        @if($taxiDriver->id == $driversWorkingDay->driver_id)
+                            <td>{{$taxiDriver->lastName}} {{$taxiDriver->firstName}}</td>
+                        @endif
+                    @endforeach
+                    <td>{{$driversWorkingDay->date}}</td>
+                    <td>{{$driversWorkingDay->shift_start}}</td>
+                    <td>{{$driversWorkingDay->shift_end}}</td>
                 </tr>
             @endforeach
             </tbody>

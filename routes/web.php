@@ -8,8 +8,28 @@ Route::get('/', function () {
 });
 
 Route::get('/home', 'HomeController@index')->name('home');
+//admin
+Route::get('/admin-orders', 'HomeController@showOrders')->name('admin-orders');
 
-Route::get('/admin-dashboard', 'HomeController@showAdmin')->name('admin-dashboard');
+Route::get('/admin-drivers', 'HomeController@showDrivers')->name('admin-drivers');
+
+Route::get('/admin-clients', 'HomeController@showClients')->name('admin-clients');
+
+Route::get('/admin-cars', 'HomeController@showCars')->name('admin-cars');
+
+Route::get('/admin-medInspections', 'HomeController@showMedInspections')->name('admin-medInspections');
+
+Route::get('/admin-techInspections', 'HomeController@showTechInspections')->name('admin-techInspections');
+
+Route::get('/admin-driversWorkingDays', 'HomeController@showDriverWorkingDays')->name('admin-driversWorkingDays');
+
+Route::get('/admin-holidays', 'HomeController@showHolidays')->name('admin-holidays');
+
+Route::get('/admin-map', 'HomeController@showMap')->name('admin-map');
+
+Route::get('/admin-report', 'ReportController@showReportFormAdmin')->name('admin-report');
+
+Route::post('/admin-report', 'ReportController@createReport')->name('admin-report');
 //report
 Route::get('/report', 'ReportController@showReportForm')->name('report');
 

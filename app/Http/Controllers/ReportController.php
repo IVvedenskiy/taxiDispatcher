@@ -18,6 +18,12 @@ class ReportController extends Controller
         return view('create-forms.report', ['drivers' => $drivers]);
     }
 
+    public function showReportFormAdmin()
+    {
+        $drivers = TaxiDriver::all();
+        return view('admin.admin-report', ['drivers' => $drivers]);
+    }
+
     public function createReport(Request $request)
     {
         $validation = $request->validate([

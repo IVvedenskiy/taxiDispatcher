@@ -27,7 +27,6 @@
 </head>
 <body>
 
-
 <div class="bg-dark row m-0">
     {{--    aside--}}
     <div class="bg-dark col-1">
@@ -69,20 +68,21 @@
             </div>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-rounded btn-danger">Карта</button>
+            <button type="button" class="btn btn-rounded btn-danger" onclick="location.href='{{ url('map') }}'">Карта
+            </button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-danger" onclick="location.href='{{ url('orders-table') }}'">Заказы
             </button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger">Info</button>
-        </div>
-        <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger">Отчеты</button>
+            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('report') }}'">Отчеты</button>
         </div>
         <div class="mt-5 mb-4 d-flex justify-content-center">
             <button type="button" class="btn btn-danger">Статистика</button>
+        </div>
+        <div class="mt-5 d-flex justify-content-center">
+            <button type="button" class="btn btn-info" onclick="location.href='{{ url('/home') }}'">Home</button>
         </div>
     </div>
     {{--    content--}}
@@ -106,14 +106,6 @@
             @endforeach
             </tbody>
         </table>
-
-        <div class="mt-5">
-            <div class="float-right">
-                <button type="submit" class="btn btn-danger" onclick="location.href='{{ url('home') }}'">
-                    {{ __('Home') }}
-                </button>
-            </div>
-        </div>
     </div>
 
 </div>
