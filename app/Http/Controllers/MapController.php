@@ -21,7 +21,6 @@ class MapController extends Controller
     {
         $drivers = TaxiDriver::all();
         $orders = Order::all()->where('completed', 0);
-//        $orders = Order::all();
         return view('map.map', ['drivers' => $drivers,
             'orders' => $orders]);
     }

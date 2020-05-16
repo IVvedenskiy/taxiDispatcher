@@ -2,16 +2,99 @@
 
 namespace App\Http\Controllers;
 
+use App\Car;
+use App\Order;
 use App\TaxiDriver;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 
 class ReportController extends Controller
 {
-    public function createReport()
+    public function showReportForm()
     {
         $drivers = TaxiDriver::all();
+        return view('create-forms.report', ['drivers' => $drivers]);
+    }
+
+    public function createReport(Request $request)
+    {
+        $validation = $request->validate([
+            'inn' => ['required', 'string', 'max:10', 'min:10']
+        ]);
+
+        $months = [
+            'січня',
+            'лютого',
+            'березня',
+            'квітня',
+            'травня',
+            'червня',
+            'липня',
+            'серпня',
+            'вересня',
+            'жовтня',
+            'листопаду',
+            'грудня'
+        ];
+
+        $cars = Car::all();
+        $orders = Order::all()->where('completed', 1)->where('driver_id', $request->input('driver_id'));
+
+        $now = date("Y-m-d H:i:s");
+        $month = date('n', strtotime($now));
+        $year = date('Y', strtotime($now));
+
+        $inn = str_split($request->input('inn'));
+
+        $address = $request->input('address');
+        $houseNumber = $request->input('houseNumber');
+        $legalAddress = "ул. Грушевского, 1д, г. Киев, 01001, Украина";
+
+        $driver = $this->getDriverById($request->input('driver_id'));
+
+        $seatNumber = '';
+        foreach ($cars as $car) {
+            if ($car->id == $driver->car_id) {
+                $seatNumber = $car->seatsNumber;
+            }
+        }
+
+        $monday = 0;
+        $tuesday = 0;
+        $wednesday = 0;
+        $thursday = 0;
+        $friday = 0;
+        $saturday = 0;
+        $sunday = 0;
+
+        foreach ($orders as $order) {
+            switch (date('N', strtotime($order->created_at))) {
+                case(1):
+                    $monday++;
+                    break;
+                case(2):
+                    $tuesday++;
+                    break;
+                case(3):
+                    $wednesday++;
+                    break;
+                case(4):
+                    $thursday++;
+                    break;
+                case(5):
+                    $friday++;
+                    break;
+                case(6):
+                    $saturday++;
+                    break;
+                case(7):
+                    $sunday++;
+                    break;
+            }
+        }
+
 
         $phpWord = new PhpWord();
         $phpWord->setDefaultFontName('Times New Roman');
@@ -26,16 +109,7 @@ class ReportController extends Controller
         $properties->setModified(mktime(time()));
         $properties->setSubject('Report');
 
-
-        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
-        $cellRowContinue = array('vMerge' => 'continue');
-        $cellColSpan2 = array('gridSpan' => 2, 'valign' => 'center');
-        $cellColSpan3 = array('gridSpan' => 3, 'valign' => 'center');
-
-        $cellVCentered = array('valign' => 'center');
-
         $section = $phpWord->addSection(array(
-//            'marginLeft' => 1133.7,
             'marginRight' => 566.9,
             'marginTop' => 850.4,
             'marginBottom' => 850.4,
@@ -46,16 +120,16 @@ class ReportController extends Controller
         $header1 = "Ідентифікаційний номер фізичної особи-підприємця – платника податків";
         $table->addRow(272, array('spaceAfter' => 0));
         $table->addCell(6463)->addText($header1, array('size' => 10), array('align' => 'center', 'valign' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
-        $table->addCell(272)->addText('', array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[0], array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[1], array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[2], array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[3], array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[4], array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[5], array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[6], array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[7], array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[8], array(), array('align' => 'center'));
+        $table->addCell(272)->addText($inn[9], array(), array('align' => 'center'));
 
 
         $header2 = "Державне статистичне спостереження";
@@ -84,7 +158,7 @@ class ReportController extends Controller
             array('size' => 13, 'bold' => true),
             array('align' => 'center'));
 
-        $section->addText("за ІІ тиждень ___________________ 20___ року",
+        $section->addText("за ІІ тиждень " . $months[$month - 1] . " " . $year . " року",
             array('size' => 11),
             array('align' => 'center'));
         $section->addText("(травня, листопада)",
@@ -108,14 +182,14 @@ class ReportController extends Controller
         $table->addRow(3101.1, array('spaceAfter' => 0));
         $cell = $table->addCell(10028.9);
         $cell->addText(" Респондент:", array('size' => 10, 'bold' => true), array('align' => 'left'));
-        $cell->addText(" Ім’я (ПІБ):  ___________________________________________________________________________________", array('size' => 10), array('align' => 'left'));
-        $cell->addText(" Місце проживання: ____________________________________________________________________________", array('size' => 10), array('align' => 'left'));
+        $cell->addText(" Ім’я (ПІБ):  " . $driver->lastName . " " . $driver->firstName, array('size' => 10), array('align' => 'left'));
+        $cell->addText(" Місце проживання: " . $address, array('size' => 10), array('align' => 'left'));
         $cell->addText("(поштовий індекс, область /АР Крим, район, населений пункт, вулиця /провулок, площа тощо, ", array('size' => 8, 'italic' => true), array('align' => 'center'));
-        $cell->addText(" _____________________________________________________________________________________________ ", array('size' => 8), array('align' => 'left'));
+        $cell->addText(" ___________________________" . $houseNumber . "__________________________________________________", array('size' => 8), array('align' => 'left'));
         $cell->addText("№ будинку /корпусу, № квартири)", array('size' => 8, 'italic' => true), array('align' => 'center'));
         $cell->addText(" Адреса здійснення діяльності, щодо якої подається анкета: __________________________________________", array('size' => 10), array('align' => 'left'));
         $cell->addText("                                                                                                                                                 (поштовий індекс, область /АР Крим,  район,", array('size' => 8, 'italic' => true), array('align' => 'left'));
-        $cell->addText(" _____________________________________________________________________________________________ ", array('size' => 10), array('align' => 'left'));
+        $cell->addText(" _____________________" . $legalAddress . "___________________ ", array('size' => 10), array('align' => 'left'));
         $cell->addText("населений пункт, вулиця /провулок, площа  тощо, № будинку /корпусу, № квартири /офісу)", array('size' => 8, 'italic' => true), array('align' => 'center'));
         $section->addPageBreak();
 
@@ -131,10 +205,10 @@ class ReportController extends Controller
         $table = $section->addTable(array('borderSize' => 6, 'borderColor' => 'ffffff', 'marginTop' => 0, 'align' => 'right'));
         $table->addRow(218, array('spaceAfter' => 0));
         $table->addCell(13577)->addText("Порядковий номер транспортного засобу, що експлуатує фізична особа-підприємець<w:br/>(у разі наявності інформації по 1 та більше транспортним засобам)", array('size' => 10), array('align' => 'right'));
-        $table->addCell(436, array('borderSize' => 6, 'borderColor' => '000000', 'marginTop' => 0))->addText("", array('size' => 10), array('align' => 'center'));
-        $table->addCell(436, array('borderSize' => 6, 'borderColor' => '000000', 'marginTop' => 0))->addText("", array('size' => 10), array('align' => 'center'));
-        $table->addCell(436, array('borderSize' => 6, 'borderColor' => '000000', 'marginTop' => 0))->addText("", array('size' => 10), array('align' => 'center'));
-        $table->addCell(436, array('borderSize' => 6, 'borderColor' => '000000', 'marginTop' => 0))->addText("", array('size' => 10), array('align' => 'center'));
+        $table->addCell(436, array('borderSize' => 6, 'borderColor' => '000000', 'marginTop' => 0))->addText("0", array('size' => 10), array('align' => 'center'));
+        $table->addCell(436, array('borderSize' => 6, 'borderColor' => '000000', 'marginTop' => 0))->addText("0", array('size' => 10), array('align' => 'center'));
+        $table->addCell(436, array('borderSize' => 6, 'borderColor' => '000000', 'marginTop' => 0))->addText("0", array('size' => 10), array('align' => 'center'));
+        $table->addCell(436, array('borderSize' => 6, 'borderColor' => '000000', 'marginTop' => 0))->addText("1", array('size' => 10), array('align' => 'center'));
         $section->addTextBreak(1);
 
 
@@ -161,30 +235,24 @@ class ReportController extends Controller
         $table->addRow(969, array('spaceAfter' => 0));
         $table->addCell(3350)->addText("Кількість перевезених<w:br/>пасажирів, осіб", array('size' => 14), array('align' => 'center'));
         $table->addCell(901)->addText("1", array('size' => 14), array('align' => 'center'));
-        $table->addCell(1570)->addText("", array('size' => 14), array('align' => 'center'));
-        $table->addCell(1570)->addText("", array('size' => 14), array('align' => 'center'));
-        $table->addCell(1570)->addText("", array('size' => 14), array('align' => 'center'));
-        $table->addCell(1570)->addText("", array('size' => 14), array('align' => 'center'));
-        $table->addCell(1570)->addText("", array('size' => 14), array('align' => 'center'));
-        $table->addCell(1570)->addText("", array('size' => 14), array('align' => 'center'));
-        $table->addCell(1570)->addText("", array('size' => 14), array('align' => 'center'));
+        $table->addCell(1570)->addText($monday, array('size' => 14), array('align' => 'center'));
+        $table->addCell(1570)->addText($tuesday, array('size' => 14), array('align' => 'center'));
+        $table->addCell(1570)->addText($wednesday, array('size' => 14), array('align' => 'center'));
+        $table->addCell(1570)->addText($thursday, array('size' => 14), array('align' => 'center'));
+        $table->addCell(1570)->addText($friday, array('size' => 14), array('align' => 'center'));
+        $table->addCell(1570)->addText($saturday, array('size' => 14), array('align' => 'center'));
+        $table->addCell(1570)->addText($sunday, array('size' => 14), array('align' => 'center'));
 
-        $section->addText("Довідково:<w:br/>Кількість місць для сидіння пасажирів, одиниць (03) ________",
+        $section->addText("Довідково:<w:br/>Кількість місць для сидіння пасажирів, одиниць (03) " . $seatNumber,
             array('size' => 10),
             array('align' => 'left'));
         $section->addTextBreak(4);
 
-        $section->addText("Місце підпису фізичної особи-підприємця,                                                   (ПІБ)<w:br/>щодо діяльності якої подається анкета",
+        $section->addText("Місце підпису фізичної особи-підприємця, " . $driver->lastName . " " . $driver->firstName . " (ПІБ)<w:br/>щодо діяльності якої подається анкета",
             array('size' => 10),
             array('align' => 'left'));
 
-        foreach ($drivers as $driver) {
-            $text = $section->addText($driver->lastName);
-            $text = $section->addText($driver->callSign);
-            $text = $section->addText($driver->phoneNumber);
-        }
-
-        $file = 'Report' . $this->getDriverById(2)->lastName . '.docx';
+        $file = 'Report' . $driver->lastName . '.docx';
 
         header("Content-Description: File Transfer");
         header('Content-Disposition: attachment; filename="' . $file . '"');

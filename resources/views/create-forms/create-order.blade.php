@@ -23,11 +23,6 @@
     <script src="//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/themes/sunny/jquery-ui.css">
 
-    <!-- Google Maps JavaScript library -->
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyBC36TmI9rcRX88IilNmUbx9Tn7vaEwxOY"></script>
-{{--    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyBC36TmI9rcRX88IilNmUbx9Tn7vaEwxOY&libraries=places&callback=initMap"--}}
-{{--            async defer></script>--}}
-
     <style>
         li.ui-menu-item {
             display: block;
@@ -111,9 +106,6 @@
             </button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger">Info</button>
-        </div>
-        <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-danger" onclick="location.href='{{ url('report') }}'">Отчеты</button>
         </div>
         <div class="mt-5 mb-4 d-flex justify-content-center">
@@ -138,14 +130,22 @@
         <form class="m-5" action="{{route('create-order')}}" method="POST">
             @csrf
             <div class="form-group">
+                <label for="tariff">Тариф</label>
+                <select name="tariff" id="tariff" class="form-control" required>
+                    <option value="10">Базовый</option>
+                    <option value="20">Средний</option>
+                    <option value="30">Премиум</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="addressFrom">Адрес откуда</label>
-                <input type="text" class="form-control" id="start" name="addressFrom"
+                <input type="text" class="form-control" id="addressFrom" name="addressFrom"
                        value="{{ old('addressFrom') }}" placeholder="Введите адрес откуда" required
                        autocomplete="addressFrom" autofocus>
             </div>
             <div class="form-group">
                 <label for="addressTo">Адрес куда</label>
-                <input type="text" class="form-control" id="end" name="addressTo" value="{{ old('addressTo') }}"
+                <input type="text" class="form-control" id="addressTo" name="addressTo" value="{{ old('addressTo') }}"
                        placeholder="Введите адрес куда" required autocomplete="addressTo" autofocus>
             </div>
             <div class="form-group">
@@ -162,14 +162,6 @@
                 <label for="passengersNumber">Количество пассажиров</label>
                 <input type="number" class="form-control" id="passengersNumber" name="passengersNumber"
                        value="{{ old('passengersNumber') }}" placeholder="Введите количество пассажиров">
-            </div>
-            <div class="form-group">
-                <label for="tariff">Тариф</label>
-                <select name="tariff" class="form-control" required>
-                    <option value='10'>Базовый</option>
-                    <option value='20'>Средний</option>
-                    <option value='30'>Премиум</option>
-                </select>
             </div>
             <div class="form-group">
                 <label for="price">Цена</label>
@@ -191,58 +183,28 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
-        var autocomplete1 = new google.maps.places.Autocomplete((document.getElementById('start')), {
-            types: ['geocode'],
-            componentRestrictions: {
-                country: "UA"
-            }
-        });
-        var autocomplete2 = new google.maps.places.Autocomplete((document.getElementById('end')), {
-            types: ['geocode'],
-            componentRestrictions: {
-                country: "UA"
-            }
-        });
-    });
-</script>
-
 
 <script>
     var map;
     var geocoder;
     var infowindow;
+    var tempAddress = '';
 
     var locationsDrivers = [
             @foreach($drivers as $driver)
-        ['{{$driver->callSign}}', random(47, 47.2), random(37.5, 37.65), 1],
+        ['{{$driver->callSign}}', random(47, 47.2), random(37.5, 37.65), '{{$driver->id}}'],
         @endforeach
     ];
 
     function initMap() {
         geocoder = new google.maps.Geocoder();
         infowindow = new google.maps.InfoWindow;
-        var directionsService = new google.maps.DirectionsService;
-        var markerArray = [];
 
-        map = new google.maps.Map(document.getElementById('map'), {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            mapTypeControl: false,
             center: {lat: 47.1, lng: 37.55},
             zoom: 13
         });
-
-        var directionsRenderer = new google.maps.DirectionsRenderer({map: map});
-        var stepDisplay = new google.maps.InfoWindow;
-
-        calculateAndDisplayRoute(
-            directionsRenderer, directionsService, markerArray, stepDisplay, map);
-
-        var onChangeHandler = function () {
-            calculateAndDisplayRoute(
-                directionsRenderer, directionsService, markerArray, stepDisplay, map);
-        };
-        document.getElementById('start').addEventListener('change', onChangeHandler);
-        document.getElementById('end').addEventListener('change', onChangeHandler);
 
         for (i = 0; i < locationsDrivers.length; i++) {
             var marker = new google.maps.Marker({
@@ -252,82 +214,133 @@
             });
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
                 return function () {
-                    infowindow.setContent(locationsDrivers[i][0]);
+                    infowindow.setContent(locationsDrivers[i][3]);
                     infowindow.open(map, marker);
                 }
             })(marker, i));
         }
-        codeAddressOrder(document.getElementById('start'));
-        codeAddressOrder(document.getElementById('end'));
+
+        new AutocompleteDirectionsHandler(map);
     }
 
-    function codeAddressOrder(locations) {
-        var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+    function AutocompleteDirectionsHandler(map) {
+        this.map = map;
+        this.originPlaceId = null;
+        this.destinationPlaceId = null;
+        this.travelMode = 'DRIVING';
+        this.directionsService = new google.maps.DirectionsService;
+        this.directionsRenderer = new google.maps.DirectionsRenderer;
+        this.directionsRenderer.setMap(map);
 
-        for (i = 0; i < locations.length; i++) {
-            geocoder.geocode({'address': locations}, function (results, status) {
+        var originInput = document.getElementById('addressFrom');
+        var destinationInput = document.getElementById('addressTo');
+
+        var originAutocomplete = new google.maps.places.Autocomplete(originInput);
+        originAutocomplete.setFields(['place_id']);
+
+        var destinationAutocomplete =
+            new google.maps.places.Autocomplete(destinationInput);
+        destinationAutocomplete.setFields(['place_id']);
+
+
+        this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
+        this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
+    }
+
+    AutocompleteDirectionsHandler.prototype.setupClickListener = function (
+        id, mode) {
+        var radioButton = document.getElementById(id);
+        var me = this;
+
+        radioButton.addEventListener('click', function () {
+            me.travelMode = mode;
+            me.route();
+        });
+    };
+
+    AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function (
+        autocomplete, mode) {
+        var me = this;
+        autocomplete.bindTo('bounds', this.map);
+
+        autocomplete.addListener('place_changed', function () {
+            var place = autocomplete.getPlace();
+
+            if (!place.place_id) {
+                window.alert('Please select an option from the dropdown list.');
+                return;
+            }
+            if (mode === 'ORIG') {
+                me.originPlaceId = place.place_id;
+            } else {
+                me.destinationPlaceId = place.place_id;
+            }
+            me.route();
+        });
+    };
+
+    AutocompleteDirectionsHandler.prototype.route = function () {
+        if (!this.originPlaceId || !this.destinationPlaceId) {
+            return;
+        }
+        var me = this;
+        var t = document.getElementById('tariff');
+        var tariff = t.options[t.selectedIndex].value / 1000;
+
+        this.directionsService.route(
+            {
+                origin: {'placeId': this.originPlaceId},
+                destination: {'placeId': this.destinationPlaceId},
+                travelMode: this.travelMode
+            },
+            function (response, status) {
+                if (status === 'OK') {
+                    me.directionsRenderer.setDirections(response);
+                    var route = response.routes[0];
+                    var summaryPanel = document.getElementById('price');
+                    summaryPanel.innerHTML = '';
+                    for (var i = 0; i < route.legs.length; i++) {
+                        document.getElementById('price').innerText = (route.legs[i].distance.value * tariff).toFixed(2);
+                    }
+                } else {
+                    // window.alert('Directions request failed due to ' + status);
+                }
+            });
+
+        // for (i = 0; i < locationsDrivers.length; i++) {
+        //     this.directionsService.route(
+        //         {
+        //             origin: {'placeId': this.originPlaceId},
+        //             destination: {'placeId': codeAddressOrder(new google.maps.LatLng(locationsDrivers[i][1], locationsDrivers[i][2]))},
+        //             travelMode: this.travelMode
+        //         },
+        //         function (response, status) {
+        //             if (status === 'OK') {
+        //                 me.directionsRenderer.setDirections(response);
+        //                 var route = response.routes[0];
+        //                 var summaryPanel = document.getElementById('price');
+        //                 summaryPanel.innerHTML = '';
+        //                 for (var i = 0; i < route.legs.length; i++) {
+        //                     document.getElementById('price').innerText = route.legs[i].distance.value;
+        //                 }
+        //             } else {
+        //                 // window.alert('Directions request failed due to ' + status);
+        //             }
+        //         });
+        // }
+    };
+
+    function codeAddressOrder(locations) {
+        for (i = 0; i < locationsDrivers.length; i++) {
+            geocoder.geocode({'location': locations}, function (results, status) {
                 if (status == 'OK') {
-                    var marker = new google.maps.Marker({
-                        map: map,
-                        icon: image,
-                        position: results[0].geometry.location,
-                        animation: google.maps.Animation.DROP
-                    });
+                    tempAddress = results[0].address;
                 } else {
                     alert('Geocode was not successful for the following reason: ' + status);
                 }
             });
         }
-    }
-
-    function calculateAndDisplayRoute(directionsRenderer, directionsService,
-                                      markerArray, stepDisplay, map) {
-        for (var i = 0; i < markerArray.length; i++) {
-            markerArray[i].setMap(null);
-        }
-        directionsService.route({
-            origin: document.getElementById('start').value,
-            destination: document.getElementById('end').value,
-            travelMode: google.maps.DirectionsTravelMode.DRIVING
-        }, function (response, status) {
-            if (status === 'OK') {
-                document.getElementById('warnings-panel').innerHTML =
-                    '<b>' + response.routes[0].warnings + '</b>';
-                directionsRenderer.setDirections(response);
-                var route = response.routes[0];
-                var summaryPanel = document.getElementById('price');
-                summaryPanel.innerHTML = '';
-                for (var i = 0; i < route.legs.length; i++) {
-                    var routeSegment = i + 1;
-                    // summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-                    //     '</b><br>';
-                    // summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
-                    // summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-                    document.getElementById('price').innerText = route.legs[i].distance.value * 0.01;
-                }
-                showSteps(response, markerArray, stepDisplay, map);
-            } else {
-                // window.alert('Directions request failed due to ' + status);
-            }
-        });
-    }
-
-    function showSteps(directionResult, markerArray, stepDisplay, map) {
-        var myRoute = directionResult.routes[0].legs[0];
-        for (var i = 0; i < myRoute.steps.length; i++) {
-            var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
-            marker.setMap(map);
-            marker.setPosition(myRoute.steps[i].start_location);
-            attachInstructionText(
-                stepDisplay, marker, myRoute.steps[i].instructions, map);
-        }
-    }
-
-    function attachInstructionText(stepDisplay, marker, text, map) {
-        google.maps.event.addListener(marker, 'click', function () {
-            stepDisplay.setContent(text);
-            stepDisplay.open(map, marker);
-        });
+        return tempAddress;
     }
 
     function random(mn, mx) {
@@ -335,6 +348,8 @@
     }
 </script>
 
-
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBC36TmI9rcRX88IilNmUbx9Tn7vaEwxOY&libraries=places&callback=initMap"
+    async defer></script>
 </body>
 </html>

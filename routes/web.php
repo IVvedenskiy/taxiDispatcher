@@ -10,8 +10,10 @@ Route::get('/', function () {
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/admin-dashboard', 'HomeController@showAdmin')->name('admin-dashboard');
+//report
+Route::get('/report', 'ReportController@showReportForm')->name('report');
 
-Route::get('/report', 'ReportController@createReport')->name('report');
+Route::post('/report', 'ReportController@createReport')->name('report');
 
 Auth::routes();
 //orders

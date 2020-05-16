@@ -16,4 +16,8 @@ class TaxiDriver extends Model
     public function getDriver() {
         return $this->belongsTo('App\DriverWorkingDays', 'id');
     }
+
+    public function getOrder() {
+        return $this->belongsTo('App\Order', 'id');
+    }
 }

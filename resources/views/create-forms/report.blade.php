@@ -9,17 +9,22 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap-grid.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap-reboot.min.css') }}" rel="stylesheet">
+    {{--    <link href="{{ asset('css/bootstrap-grid.min.css') }}" rel="stylesheet">--}}
+    {{--    <link href="{{ asset('css/bootstrap-reboot.min.css') }}" rel="stylesheet">--}}
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-</head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    {{--    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"--}}
+    {{--            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"--}}
+    {{--            crossorigin="anonymous"></script>--}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script></head>
 <body>
-
 
 
 <div class="bg-dark row m-0">
@@ -63,80 +68,63 @@
             </div>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-rounded btn-danger">Карта</button>
+            <button type="button" class="btn btn-rounded btn-danger" onclick="location.href='{{ url('map') }}'">Карта
+            </button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-danger" onclick="location.href='{{ url('orders-table') }}'">Заказы
             </button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger">Info</button>
-        </div>
-        <div class="mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger">Отчеты</button>
+            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('report') }}'">Отчеты</button>
         </div>
         <div class="mt-5 mb-4 d-flex justify-content-center">
             <button type="button" class="btn btn-danger">Статистика</button>
         </div>
+        <div class="mt-5 d-flex justify-content-center">
+            <button type="button" class="btn btn-info" onclick="location.href='{{ url('/home') }}'">Home</button>
+        </div>
     </div>
     {{--    content--}}
-    <div class="col-xl-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Таблица заказами</h3>
-        <table class="table table-hover table-bordered">
-            <thead class="bg-danger text-center text-light">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Адрес начала</th>
-                <th scope="col">Адрес конца</th>
-                <th scope="col">Тариф</th>
-                <th scope="col">Количество пассажиров</th>
-                <th scope="col">Цена</th>
-                <th scope="col">Описание</th>
-                <th scope="col">Статус</th>
-                <th scope="col">Клиент</th>
-                <th scope="col">Водитель</th>
-                <th scope="col">Время</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($orders as $order)
-                <tr>
-                    <td>{{$order->id}}</td>
-                    <td>{{$order->addressFrom}}</td>
-                    <td>{{$order->addressTo}}</td>
-                    <td>
-                        @switch($order->tariff)
-                            @case(10)Базовый@break
-                            @case(20)Средний@break
-                            @case(30)Премиум@break
-                        @endswitch
-                    </td>
-                    <td>{{$order->passengersNumber}}</td>
-                    <td>{{$order->price}}</td>
-                    <td>{{$order->description}}</td>
-                    <td>
-                        @switch($order->completed)
-                            @case(0)Свободен@break
-                            @case(1)Выполнен@break
-                        @endswitch
-                    </td>
-                    @foreach($clients as $client)
-                        @if($client->id == $order->client_id)
-                            <td>{{$client->name}}</td>
-                        @endif
+    <div class="col-11 bg-light p-0">
+        <h3 class="card-header text-center text-white bg-info">Создать машину</h3>
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{$error}}</li>
                     @endforeach
-                    @foreach($taxiDrivers as $taxiDriver)
-                        @if($taxiDriver->id == $order->driver_id)
-                            <td>{{$taxiDriver->firstName}}{{$taxiDriver->lastName}}</td>
-                        @endif
+                </ul>
+            </div>
+        @endif
+        <form class="m-5" action="{{route('report')}}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="driver">Водитель</label>
+                <select name="driver_id" class="form-control" required>
+                    @foreach($drivers as $driver)
+                        <option value="{{$driver->id}}">{{$driver->lastName}} {{$driver->firstName}}</option>
                     @endforeach
-                    <td>{{$order->created_at}}</td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="inn">ИНН</label>
+                <input type="text" class="form-control" id="inn" name="inn" value="{{ old('inn') }}" placeholder="Введите ИНН" required autocomplete="inn" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="address">Адрес проживания</label>
+                <input type="text" class="form-control" id="address" name="address" value="{{ old('address') }}" placeholder="Введите адрес" required autocomplete="address" autofocus>
+                <input type="text" class="form-control" id="houseNumber" name="houseNumber" value="{{ old('houseNumber') }}" placeholder="Введите номер дома" required autocomplete="houseNumber" autofocus>
+            </div>
+            <div class="row p-5">
+                <button type="submit" class="btn btn-success w-100">Подтвердить</button>
+            </div>
+        </form>
     </div>
-</div>
 
+</div>
+<script>
+    $("#inn").mask("9999999999");
+</script>
 </body>
 </html>

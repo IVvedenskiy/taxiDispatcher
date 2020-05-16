@@ -11,8 +11,8 @@ class DriversController extends Controller
     public function create(Request $request)
     {
         $validation = $request->validate([
-            'firstName' => ['required', 'string', 'regex:/^[A-Za-z\s -_]+$/', 'max:255', 'min:2'],
-            'lastName' => ['required', 'string', 'regex:/^[A-Za-z\s -_]+$/', 'max:255', 'min:2'],
+            'firstName' => ['required', 'string', 'max:255', 'min:2'],
+            'lastName' => ['required', 'string',  'max:255', 'min:2'],
             'callSign' => ['required', 'string', 'max:5', 'min:1'],
             'phoneNumber' => ['required', 'string', 'max:255', 'min:1'],
             'status' => ['required', 'string', 'max:255', 'min:1'],
