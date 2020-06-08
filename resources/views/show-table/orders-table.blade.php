@@ -80,7 +80,7 @@
     </div>
     {{--    content--}}
     <div class="col-xl-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Таблица заказами</h3>
+        <h3 class="card-header text-center text-white bg-info">Таблица заказов</h3>
         <table class="table table-hover table-bordered">
             <thead class="bg-danger text-center text-light">
             <tr>
@@ -94,7 +94,7 @@
                 <th scope="col">Статус</th>
                 <th scope="col">Клиент</th>
                 <th scope="col">Водитель</th>
-                <th scope="col">Время</th>
+                <th scope="col">Время создания</th>
             </tr>
             </thead>
             <tbody>

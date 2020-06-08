@@ -8,8 +8,6 @@ use App\TaxiDriver;
 
 class MapController extends Controller
 {
-
-
     public function createMarker()
     {
         $orders = Order::where('completed', 0)
