@@ -24,6 +24,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
 
@@ -79,7 +80,8 @@
             <button type="button" class="btn btn-danger" onclick="location.href='{{ url('report') }}'">Отчеты</button>
         </div>
         <div class="mt-5 mb-4 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('statistic') }}'">Статистика</button>
+            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('statistic') }}'">Статистика
+            </button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-info" onclick="location.href='{{ url('/home') }}'">Home</button>
@@ -87,27 +89,68 @@
     </div>
     {{--    content--}}
     <div class="col-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Таблица c праздниками</h3>
-        <table class="table table-hover table-bordered">
-            <thead class="bg-danger text-center text-light">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Название праздника</th>
-                <th scope="col">День</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($holidays as $holiday)
-                <tr>
-                    <td>{{$holiday->id}}</td>
-                    <td>{{$holiday->name}}</td>
-                    <td>{{$holiday->date}}</td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
+        <h3 class="card-header text-center text-white bg-info">Статистика</h3>
+        <div id="tooltip_action" class="h-50 mb-n4"></div>
+        <div id="piechart" style="height: 46%"></div>
     </div>
 
 </div>
+
+<script>
+    google.charts.load('current', {'packages': ['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    var totalSum = 0;
+
+    @foreach($orders as $order)
+        @foreach($drivers as $driver)
+            @if($order->driver_id == $driver->id)
+                totalSum += parseFloat('{{$order->price}}');
+            @endif
+        @endforeach
+    @endforeach
+
+    function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['Money', 'Money in day'],
+            @foreach($drivers as $driver)
+            ['{{$driver->firstName}} {{$driver->lastName}}', 1],
+            @endforeach
+            ['1', 10]
+        ]);
+
+        var options = {
+            title: 'Заработок службы'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+    }
+</script>
+
+<script>
+    google.charts.load('current', {'packages': ['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('string', 'Year');
+        dataTable.addColumn('number', 'Sales');
+        // A column for custom tooltip content
+        dataTable.addColumn({type: 'string', role: 'tooltip'});
+        dataTable.addRows([
+            ['2010', 600, '$600K in our first year!'],
+            ['2011', 1500, 'Sunspot activity made this our best year ever!'],
+            ['2012', 800, '$800K in 2012.'],
+            ['2013', 1000, '$1M in sales last year.']
+        ]);
+
+        var options = {legend: 'none'};
+        var chart = new google.visualization.ColumnChart(document.getElementById('tooltip_action'));
+        chart.draw(dataTable, options);
+    }
+</script>
 </body>
 </html>

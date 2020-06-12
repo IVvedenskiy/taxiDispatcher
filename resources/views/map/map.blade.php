@@ -135,7 +135,7 @@
         var markerArray = [];
 
         map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 47.1, lng: 37.55},
+            center: {lat: 48, lng: 37.78},
             zoom: 13
         });
 

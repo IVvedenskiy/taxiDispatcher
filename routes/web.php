@@ -86,3 +86,5 @@ Route::post('/create-techInspections', 'TechInspectionsController@create')->name
 Route::get('/techInspections-table', 'TechInspectionsController@showTechInspections')->name('techInspections-table');
 //map
 Route::get('/map', 'MapController@showMap')->name('map');
+//statistic
+Route::get('/statistic', 'DriversController@showStatisticForDriver')->name('statistic');

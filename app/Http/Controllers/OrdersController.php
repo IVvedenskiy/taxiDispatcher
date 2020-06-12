@@ -40,7 +40,7 @@ class OrdersController extends Controller
     public function showOrders()
     {
         $clients = Client::all();
-        $orders = Order::all();
+        $orders = Order::orderBy('created_at', 'desc')->get();
         $taxiDrivers = TaxiDriver::all();
         return view('show-table.orders-table',
             ['clients' => $clients,

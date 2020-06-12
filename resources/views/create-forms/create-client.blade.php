@@ -82,7 +82,7 @@
     </div>
     {{--    content--}}
     <div class="col-11 bg-light p-0">
-        <h3 class="card-header text-center text-white bg-info">Создать машину</h3>
+        <h3 class="card-header text-center text-white bg-info">Создать клиента</h3>
         @if($errors->any())
             <div class="alert alert-danger">
                 <ul>

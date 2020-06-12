@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Car;
+use App\Order;
 use App\TaxiDriver;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class DriversController extends Controller
     {
         $validation = $request->validate([
             'firstName' => ['required', 'string', 'max:255', 'min:2'],
-            'lastName' => ['required', 'string',  'max:255', 'min:2'],
+            'lastName' => ['required', 'string', 'max:255', 'min:2'],
             'callSign' => ['required', 'string', 'max:5', 'min:1'],
             'phoneNumber' => ['required', 'string', 'max:255', 'min:1'],
             'status' => ['required', 'string', 'max:255', 'min:1'],
@@ -38,9 +39,17 @@ class DriversController extends Controller
         return view('create-forms.create-driver', ['cars' => $cars]);
     }
 
-    public function showDrivers(){
+    public function showDrivers()
+    {
         $taxiDrivers = TaxiDriver::all();
         $cars = Car::all();
         return view('show-table.drivers-table', ['taxiDrivers' => $taxiDrivers, 'cars' => $cars]);
+    }
+
+    public function showStatisticForDriver()
+    {
+        $orders = Order::all();
+        $drivers = TaxiDriver::all();
+        return view('show-table.statistics', ['orders' => $orders, 'drivers' => $drivers]);
     }
 }
