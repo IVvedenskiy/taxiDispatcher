@@ -147,13 +147,13 @@ class ReportController extends Controller
 
 
         $table = $section->addTable(array('borderSize' => 6, 'borderColor' => '000000', 'marginLeft' => 2267.7, 'marginTop' => 0));
-        $header3 = "Конфиденциальность статистической информации обеспечивается<w:br/>статьей 21 Закона Украины \"О государственной статистике\"";
+        $header3 = "Конфиденциальность статистической информации обеспечивается<w:br/>статьей 21 Закона \"О государственной статистике\"";
         $table->addRow(272, array('spaceAfter' => 0));
         $table->addCell(7018.6)->addText($header3, array('size' => 9, 'bold' => true), array('align' => 'center'));
         $section->addTextBreak(1);
 
         $table = $section->addTable(array('borderSize' => 6, 'borderColor' => '000000', 'marginTop' => 0));
-        $header4 = "Нарушение порядка представления или использования данных государственных статистических наблюдений влечет за собой<w:br/>ответственность, установленную статьей 186³ Кодекса Украинвы об административных правонарушениях";
+        $header4 = "Нарушение порядка представления или использования данных государственных статистических наблюдений влечет за собой<w:br/>ответственность, установленную статьей 186³ Кодекса об административных правонарушениях";
         $table->addRow(272, array('spaceAfter' => 0));
         $table->addCell(9569.7)->addText($header4, array('size' => 9, 'bold' => true), array('align' => 'center'));
         $section->addTextBreak(1);

@@ -172,6 +172,10 @@
                 <textarea class="form-control" id="description" name="description" value="{{ old('description') }}"
                           rows="1"></textarea>
             </div>
+            <div class="form-group">
+                <label for="driver_id">Водитель</label>
+                <textarea type="text" class="form-control" id="driver_id" name="driver_id" rows="1"></textarea>
+            </div>
             <div class="row p-5">
                 <button type="submit" class="btn btn-success w-100">Подтвердить</button>
             </div>
@@ -191,9 +195,9 @@
     var tempAddress = '';
 
     var locationsDrivers = [
-            @foreach($drivers as $driver)
-        ['{{$driver->callSign}}', random(47, 47.2), random(37.5, 37.65), '{{$driver->id}}'],
-        @endforeach
+            @for($i=0, $j=1, $k=2, $l=3; $i<count($driversLocations); $i+=4, $j+=4, $k+=4, $l+=4)
+                ['{{$driversLocations[$j]}}', {{$driversLocations[$k]}}, {{$driversLocations[$l]}}, '{{$driversLocations[$i]}}'],
+            @endfor
     ];
 
     function initMap() {
@@ -307,44 +311,43 @@
                 }
             });
 
-        // for (i = 0; i < locationsDrivers.length; i++) {
-        //     this.directionsService.route(
-        //         {
-        //             origin: {'placeId': this.originPlaceId},
-        //             destination: {'placeId': codeAddressOrder(new google.maps.LatLng(locationsDrivers[i][1], locationsDrivers[i][2]))},
-        //             travelMode: this.travelMode
-        //         },
-        //         function (response, status) {
-        //             if (status === 'OK') {
-        //                 me.directionsRenderer.setDirections(response);
-        //                 var route = response.routes[0];
-        //                 var summaryPanel = document.getElementById('price');
-        //                 summaryPanel.innerHTML = '';
-        //                 for (var i = 0; i < route.legs.length; i++) {
-        //                     document.getElementById('price').innerText = route.legs[i].distance.value;
-        //                 }
-        //             } else {
-        //                 // window.alert('Directions request failed due to ' + status);
-        //             }
-        //         });
-        // }
+        findNearestDriver();
     };
 
-    function codeAddressOrder(locations) {
-        for (i = 0; i < locationsDrivers.length; i++) {
-            geocoder.geocode({'location': locations}, function (results, status) {
-                if (status == 'OK') {
-                    tempAddress = results[0].address;
-                } else {
-                    alert('Geocode was not successful for the following reason: ' + status);
+    function findNearestDriver() {
+        var address = document.getElementById('addressFrom').value;
+        var locs = [];
+
+        geocoder.geocode({'address': address}, function (results, status) {
+            if (status == 'OK') {
+                for (i = 0; i < locationsDrivers.length; i++) {
+                    locs.push(distance(locationsDrivers[i][1], locationsDrivers[i][2], results[0].geometry.location.lat(), results[0].geometry.location.lng()));
                 }
-            });
-        }
-        return tempAddress;
+                document.getElementById('driver_id').innerText = locs.indexOf(Math.min.apply(null, locs))+1;
+                locs.forEach(item => console.log(item))
+            } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
     }
 
-    function random(mn, mx) {
-        return Math.random() * (mx - mn) + mn;
+    function distance(latA, lngA, latB, lngB) {
+        R = 6371000;
+        radiansLAT_A = degrees_to_radians(latA);
+        radiansLAT_B = degrees_to_radians(latB);
+        variationLAT = degrees_to_radians(latB - latA);
+        variationLNG = degrees_to_radians(lngB - lngA);
+
+        a = Math.sin(variationLAT/2) * Math.sin(variationLAT/2)
+            + Math.cos(radiansLAT_A) * Math.cos(radiansLAT_B) * Math.sin(variationLNG/2) * Math.sin(variationLNG/2);
+        c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        d = R * c;
+        return d;
+    }
+
+    function degrees_to_radians(degrees){
+        var pi = Math.PI;
+        return degrees * (pi/180);
     }
 </script>
 

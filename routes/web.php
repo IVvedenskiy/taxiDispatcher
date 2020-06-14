@@ -87,4 +87,4 @@ Route::get('/techInspections-table', 'TechInspectionsController@showTechInspecti
 //map
 Route::get('/map', 'MapController@showMap')->name('map');
 //statistic
-Route::get('/statistic', 'DriversController@showStatisticForDriver')->name('statistic');
+Route::get('/statistic', 'DriversController@showCharts')->name('statistic');

@@ -30,7 +30,7 @@ class OrdersController extends Controller
         $order->passengersNumber = $request->input('passengersNumber');
         $order->completed = $this->getRandom();
         $order->client_id = $request->input('client_id');
-        $order->driver_id = 4;
+        $order->driver_id = $request->input('driver_id');
 
         $order->save();
 
@@ -53,7 +53,14 @@ class OrdersController extends Controller
         $clients = Client::all();
         $orders = Order::all();
         $drivers = TaxiDriver::all();
-        return view('create-forms.create-order', ['orders' => $orders, 'clients' => $clients, 'drivers' => $drivers]);
+
+        $driversLocations = array();
+
+        foreach ($drivers as $driver) {
+            array_push($driversLocations, $driver->id, $driver->callSign, $this->randomDriversLocation(47.8, 48),  $this->randomDriversLocation(37.7, 37.85));
+        }
+
+        return view('create-forms.create-order', ['orders' => $orders, 'clients' => $clients, 'drivers' => $drivers, 'driversLocations'=>$driversLocations]);
     }
 
     public function getRandom(){
@@ -63,5 +70,26 @@ class OrdersController extends Controller
             else return true;
         } catch (\Exception $e) {
         }
+    }
+
+    public function randomDriversLocation($mn, $mx) {
+        return mt_rand($mn*10000, $mx*10000)/10000;
+    }
+
+    private function distance($latA, $lngA,$latB, $lngB) {
+        $R = 6371000;
+        $radiansLAT_A = deg2rad($latA);
+        $radiansLAT_B = deg2rad($latB);
+        $variationLAT = deg2rad($latB - $latA);
+        $variationLNG = deg2rad($lngB - $lngA);
+
+        $a = sin($variationLAT/2) * sin($variationLAT/2)
+            + cos($radiansLAT_A) * cos($radiansLAT_B) * sin($variationLNG/2) * sin($variationLNG/2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+
+        $d = $R * $c;
+
+        return $d;
     }
 }

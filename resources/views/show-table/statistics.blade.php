@@ -100,28 +100,22 @@
     google.charts.load('current', {'packages': ['corechart']});
     google.charts.setOnLoadCallback(drawChart);
 
-    var totalSum = 0;
-
-    @foreach($orders as $order)
-        @foreach($drivers as $driver)
-            @if($order->driver_id == $driver->id)
-                totalSum += parseFloat('{{$order->price}}');
-            @endif
-        @endforeach
-    @endforeach
-
     function drawChart() {
 
         var data = google.visualization.arrayToDataTable([
             ['Money', 'Money in day'],
-            @foreach($drivers as $driver)
-            ['{{$driver->firstName}} {{$driver->lastName}}', 1],
+                @foreach($drivers as $driver)
+                @for($i=0;$i<count($driversMoney);$i++)
+                @if($driver->id == $driversMoney[$i])
+            ['{{$driver->firstName}} {{$driver->lastName}}', {{$driversMoney[$i+1]}}],
+            @endif
+            @endfor
             @endforeach
-            ['1', 10]
         ]);
 
         var options = {
-            title: 'Заработок службы'
+            title: 'Заработок службы по водителям',
+            is3D: true,
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -141,10 +135,13 @@
         // A column for custom tooltip content
         dataTable.addColumn({type: 'string', role: 'tooltip'});
         dataTable.addRows([
-            ['2010', 600, '$600K in our first year!'],
-            ['2011', 1500, 'Sunspot activity made this our best year ever!'],
-            ['2012', 800, '$800K in 2012.'],
-            ['2013', 1000, '$1M in sales last year.']
+                @foreach($drivers as $driver)
+                    @for($i=0;$i<count($driversMoney);$i++)
+                        @if($driver->id == $driversMoney[$i])
+                            ['{{$driver->firstName}} {{$driver->lastName}}', {{$completedOrders[$i+1]}}, 'Количество выполненных заказов'],
+                        @endif
+                    @endfor
+            @endforeach
         ]);
 
         var options = {legend: 'none'};

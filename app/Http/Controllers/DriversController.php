@@ -46,10 +46,37 @@ class DriversController extends Controller
         return view('show-table.drivers-table', ['taxiDrivers' => $taxiDrivers, 'cars' => $cars]);
     }
 
-    public function showStatisticForDriver()
+    public function showCharts()
     {
-        $orders = Order::all();
+        $orders = Order::all()->where('completed', 1);
         $drivers = TaxiDriver::all();
-        return view('show-table.statistics', ['orders' => $orders, 'drivers' => $drivers]);
+        $driversMoney = array();
+
+        foreach ($drivers as $driver) {
+            $money = 0;
+            foreach ($orders as $order) {
+                if ($order->driver_id == $driver->id) {
+                    $money += $order->price;
+                }
+            }
+            array_push($driversMoney, $driver->id, $money);
+        }
+
+        $ordersCompleted = Order::all()->where('completed', 1);
+        $drivers = TaxiDriver::all();
+        $completedOrders = array();
+        $count = 0;
+
+        foreach ($drivers as $driver) {
+            foreach ($ordersCompleted as $order) {
+                if ($order->driver_id == $driver->id) {
+                    $count+=1;
+                }
+            }
+            array_push($completedOrders, $driver->id, $count);
+            $count = 0;
+        }
+
+        return view('show-table.statistics', ['orders' => $orders, 'drivers' => $drivers, 'driversMoney' => $driversMoney, 'completedOrders' => $completedOrders]);
     }
 }
