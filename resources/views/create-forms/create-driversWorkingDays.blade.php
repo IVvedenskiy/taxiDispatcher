@@ -73,7 +73,7 @@
             <button type="button" class="btn btn-danger" onclick="location.href='{{ url('report') }}'">Отчеты</button>
         </div>
         <div class="mt-5 mb-4 d-flex justify-content-center">
-            <button type="button" class="btn btn-danger">Статистика</button>
+            <button type="button" class="btn btn-danger" onclick="location.href='{{ url('statistic') }}'">Статистика</button>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <button type="button" class="btn btn-info" onclick="location.href='{{ url('/home') }}'">Home</button>
